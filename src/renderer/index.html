@@ -667,9 +667,10 @@
 
   // ── Render game list ───────────────────────────────
   function renderList() {
-    const query = document.getElementById('search').value.toLowerCase();
-    const list  = document.getElementById('game-list');
-    list.innerHTML = '';
+    const query     = document.getElementById('search').value.toLowerCase();
+    const list      = document.getElementById('game-list');
+    const noResults = document.getElementById('no-results');
+    list.innerHTML  = '';
 
     const filtered = allGames.filter(g => {
       const matchCat  = currentFilter === 'All' || g.category === currentFilter;
@@ -677,7 +678,6 @@
       return matchCat && matchName;
     });
 
-    const noResults = document.getElementById('no-results');
     if (filtered.length === 0) {
       noResults.style.display = 'block';
       list.appendChild(noResults);
