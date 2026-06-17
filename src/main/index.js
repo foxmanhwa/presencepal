@@ -6,6 +6,14 @@ const { spawn, exec } = require('child_process');
 let mainWindow;
 const runningProcesses = new Map(); // appId -> { child, exeName }
 
+// Works in dev (relative to src/main/) and in packaged builds (resources/)
+function getRunnerPath() {
+  if (app.isPackaged) {
+    return path.join(process.resourcesPath, 'runner.exe');
+  }
+  return path.join(__dirname, '../../assets/runner.exe');
+}
+
 function createWindow() {
   mainWindow = new BrowserWindow({
     width: 820,
@@ -56,9 +64,11 @@ ipcMain.handle('launch-game', async (_, { appId, exeName, exePath, gameName }) =
     return { success: false, error: `Could not create game folder: ${err.message}` };
   }
 
-  const runnerSrc = path.join(__dirname, '../../assets/runner.exe');
+  const runnerSrc = getRunnerPath();
+  console.log('[presencepal] runner path:', runnerSrc);
+  console.log('[presencepal] runner exists:', fs.existsSync(runnerSrc));
   if (!fs.existsSync(runnerSrc)) {
-    return { success: false, error: 'assets/runner.exe is missing — re-download the app from GitHub.' };
+    return { success: false, error: `runner.exe not found at: ${runnerSrc}` };
   }
 
   const targetExe = path.join(gameDir, exeName);

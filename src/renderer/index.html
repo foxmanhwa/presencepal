@@ -420,74 +420,66 @@
       color: var(--text);
     }
 
-    /* Right column — quest tracker */
-    #quest-card {
+    /* Right column — status panel */
+    #status-card {
       background: var(--bg2);
       border: 1px solid var(--border);
       border-radius: var(--radius);
       padding: 16px;
     }
-    #quest-card .card-title {
+    #status-card .card-title {
       font-size: 11px;
       font-weight: 700;
       letter-spacing: 0.8px;
       text-transform: uppercase;
       color: var(--text-muted);
-      margin-bottom: 14px;
+      margin-bottom: 16px;
     }
-    .quest-time-display {
-      font-size: 28px;
+    .sc-indicator {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    #sc-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: var(--text-muted);
+      flex-shrink: 0;
+      transition: background 0.3s;
+    }
+    #sc-dot.active   { background: var(--green); }
+    #sc-dot.scanning { background: var(--yellow); animation: pulse 1s ease-in-out infinite; }
+    #sc-label {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+    #sc-label.active   { color: var(--green); font-weight: 600; }
+    #sc-label.scanning { color: var(--yellow); }
+    #sc-game-section { display: none; }
+    #sc-game-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 10px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    #sc-elapsed-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+    #sc-elapsed {
+      font-size: 34px;
       font-weight: 700;
       font-variant-numeric: tabular-nums;
       color: var(--text);
-      letter-spacing: -0.5px;
-      margin-bottom: 4px;
-    }
-    .quest-goal {
-      font-size: 11px;
-      color: var(--text-muted);
-      margin-bottom: 12px;
-    }
-    .progress-bar-wrap {
-      background: var(--bg3);
-      border-radius: 4px;
-      height: 6px;
-      overflow: hidden;
-      margin-bottom: 14px;
-    }
-    #progress-bar {
-      height: 100%;
-      background: var(--green);
-      border-radius: 4px;
-      width: 0%;
-      transition: width 1s linear;
-    }
-    .quest-state-row {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 12px;
-      color: var(--text-muted);
-    }
-    .quest-dot {
-      width: 7px; height: 7px;
-      border-radius: 50%;
-      background: var(--text-muted);
-    }
-    .quest-dot.active   { background: var(--green); }
-    .quest-dot.scanning { background: var(--yellow); animation: pulse 1s ease-in-out infinite; }
-
-    #quest-complete-banner {
-      display: none;
-      margin-top: 12px;
-      background: rgba(35, 165, 90, 0.15);
-      border: 1px solid var(--green);
-      border-radius: 6px;
-      padding: 10px 12px;
-      font-size: 12px;
-      color: var(--green);
-      text-align: center;
-      font-weight: 600;
+      letter-spacing: -1px;
     }
 
     /* ── Modal ─────────────────────────────────────────── */
@@ -635,19 +627,18 @@
           </div>
         </div>
 
-        <!-- Right: quest tracker -->
-        <div id="quest-card">
-          <div class="card-title">Quest Tracker</div>
-          <div class="quest-time-display" id="quest-time">0:00</div>
-          <div class="quest-goal">Goal: 15:00 &nbsp;·&nbsp; <span id="quest-pct">0%</span></div>
-          <div class="progress-bar-wrap">
-            <div id="progress-bar"></div>
+        <!-- Right: status panel -->
+        <div id="status-card">
+          <div class="card-title">Status</div>
+          <div class="sc-indicator">
+            <div id="sc-dot"></div>
+            <span id="sc-label">Not running</span>
           </div>
-          <div class="quest-state-row">
-            <div class="quest-dot" id="quest-dot"></div>
-            <span id="quest-state-text">Not started</span>
+          <div id="sc-game-section">
+            <div id="sc-game-name"></div>
+            <div id="sc-elapsed-label">Elapsed</div>
+            <div id="sc-elapsed">0:00</div>
           </div>
-          <div id="quest-complete-banner">🎉 Quest complete! You can stop now.</div>
         </div>
       </div>
     </div>
@@ -687,15 +678,13 @@
   const api = window.presencepal;
 
   // ── State ────────────────────────────────────────────
-  let allGames       = [];
-  let selectedGame   = null;
-  let activeGame     = null;
-  let scanInterval   = null;
-  let questInterval  = null;
-  let questSeconds   = 0;
-  let QUEST_GOAL     = 900; // 15 minutes in seconds
+  let allGames        = [];
+  let selectedGame    = null;
+  let scanInterval    = null;
+  let elapsedInterval = null;
+  let elapsedSeconds  = 0;
   const DISPLAY_LIMIT = 150;
-  const runningSet   = new Set(); // appIds currently running
+  const runningSet    = new Set(); // appIds currently running
 
   // ── Toast ─────────────────────────────────────────────
   function toast(msg, type = 'info', duration = 3000) {
@@ -930,51 +919,46 @@
     span.textContent = text;
   }
 
-  function setQuestState(type, text) {
-    const dot  = document.getElementById('quest-dot');
-    const span = document.getElementById('quest-state-text');
-    dot.className  = `quest-dot ${type}`;
-    span.textContent = text;
-  }
-
-  // ── Quest timer ───────────────────────────────────────
-  function startQuestTimer() {
-    questSeconds = 0;
-    clearInterval(questInterval);
-    document.getElementById('quest-complete-banner').style.display = 'none';
-    questInterval = setInterval(() => {
-      questSeconds++;
-      const m   = Math.floor(questSeconds / 60);
-      const s   = questSeconds % 60;
-      const pct = Math.min(100, Math.round((questSeconds / QUEST_GOAL) * 100));
-      document.getElementById('quest-time').textContent    = `${m}:${String(s).padStart(2,'0')}`;
-      document.getElementById('quest-pct').textContent     = `${pct}%`;
-      document.getElementById('progress-bar').style.width  = `${pct}%`;
-      document.getElementById('elapsed-text').textContent  = `${m}:${String(s).padStart(2,'0')} elapsed`;
-
-      if (questSeconds >= QUEST_GOAL && !document.getElementById('quest-complete-banner').style.display.includes('flex')) {
-        document.getElementById('quest-complete-banner').style.display = 'block';
-        toast('🎉 Quest complete! You can stop the process now.', 'success', 6000);
-      }
+  // ── Elapsed timer ─────────────────────────────────────
+  function startElapsed(gameName) {
+    elapsedSeconds = 0;
+    clearInterval(elapsedInterval);
+    const gameSection = document.getElementById('sc-game-section');
+    gameSection.style.display = 'block';
+    document.getElementById('sc-game-name').textContent = gameName;
+    document.getElementById('sc-elapsed').textContent = '0:00';
+    elapsedInterval = setInterval(() => {
+      elapsedSeconds++;
+      const m   = Math.floor(elapsedSeconds / 60);
+      const s   = elapsedSeconds % 60;
+      const str = `${m}:${String(s).padStart(2, '0')}`;
+      document.getElementById('sc-elapsed').textContent      = str;
+      document.getElementById('elapsed-text').textContent    = str + ' elapsed';
     }, 1000);
   }
 
-  function stopQuestTimer() {
-    clearInterval(questInterval);
-    questInterval  = null;
-    questSeconds   = 0;
-    document.getElementById('quest-time').textContent   = '0:00';
-    document.getElementById('quest-pct').textContent    = '0%';
-    document.getElementById('progress-bar').style.width = '0%';
-    document.getElementById('elapsed-text').textContent = '';
-    document.getElementById('quest-complete-banner').style.display = 'none';
+  function stopElapsed() {
+    clearInterval(elapsedInterval);
+    elapsedInterval = null;
+    elapsedSeconds  = 0;
+    document.getElementById('sc-game-section').style.display = 'none';
+    document.getElementById('sc-elapsed').textContent        = '0:00';
+    document.getElementById('elapsed-text').textContent      = '';
+  }
+
+  function setStatusCard(type, label) {
+    const dot  = document.getElementById('sc-dot');
+    const span = document.getElementById('sc-label');
+    dot.className   = type;
+    span.className  = type;
+    span.textContent = label;
   }
 
   // ── Scan countdown ────────────────────────────────────
   function startScanCountdown(onDone) {
     let n = 5;
     setStatus('scanning', `Discord is scanning… (${n})`);
-    setQuestState('scanning', 'Waiting for Discord to detect…');
+    setStatusCard('scanning', `Scanning… (${n})`);
     clearInterval(scanInterval);
     scanInterval = setInterval(() => {
       n--;
@@ -984,6 +968,7 @@
         onDone();
       } else {
         setStatus('scanning', `Discord is scanning… (${n})`);
+        setStatusCard('scanning', `Scanning… (${n})`);
       }
     }, 1000);
   }
@@ -1019,9 +1004,9 @@
     renderList();
 
     startScanCountdown(() => {
-      setStatus('active', 'Running — Quest timer active');
-      setQuestState('active', 'Quest timer counting');
-      startQuestTimer();
+      setStatus('active', 'Active');
+      setStatusCard('active', 'Active');
+      startElapsed(selectedGame.name);
     });
 
     toast(`Launched ${exeName}`, 'success');
@@ -1038,9 +1023,9 @@
     const res = await api.stopGame({ appId: selectedGame.id, exeName });
 
     runningSet.delete(selectedGame.id);
-    stopQuestTimer();
+    stopElapsed();
     setStatus('', 'Not active');
-    setQuestState('', 'Not started');
+    setStatusCard('', 'Not running');
     document.getElementById('btn-stop').disabled = true;
     renderList();
 
