@@ -8,19 +8,20 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg:        #1e1f22;
-      --bg2:       #2b2d31;
-      --bg3:       #313338;
-      --border:    #3d3f45;
-      --text:      #dbdee1;
-      --text-muted:#949ba4;
-      --accent:    #5865f2;
-      --accent-h:  #4752c4;
-      --green:     #23a55a;
-      --green-h:   #1a8a47;
-      --red:       #ed4245;
-      --red-h:     #c93b3e;
-      --radius:    8px;
+      --bg:         #1e1f22;
+      --bg2:        #2b2d31;
+      --bg3:        #313338;
+      --border:     #3d3f45;
+      --text:       #dbdee1;
+      --text-muted: #949ba4;
+      --accent:     #5865f2;
+      --accent-h:   #4752c4;
+      --green:      #23a55a;
+      --green-h:    #1a8a47;
+      --red:        #ed4245;
+      --red-h:      #c93b3e;
+      --yellow:     #f0b429;
+      --radius:     8px;
     }
 
     html, body { height: 100%; overflow: hidden; }
@@ -36,7 +37,7 @@
       user-select: none;
     }
 
-    /* ── Titlebar ── */
+    /* ── Titlebar ──────────────────────────────────────── */
     #titlebar {
       display: flex;
       align-items: center;
@@ -55,7 +56,6 @@
       font-weight: 700;
       font-size: 13px;
       letter-spacing: 0.3px;
-      color: var(--text);
     }
     #titlebar .brand .logo { font-size: 18px; }
     #titlebar .brand .name span { color: var(--accent); }
@@ -74,18 +74,14 @@
       transition: opacity 0.15s;
       color: #fff;
     }
-    .tb-btn:hover { opacity: 0.85; }
-    .tb-btn.minimize { background: #f0b429; }
+    .tb-btn:hover { opacity: 0.8; }
+    .tb-btn.minimize { background: var(--yellow); }
     .tb-btn.close    { background: var(--red); }
 
-    /* ── Layout ── */
-    #app {
-      display: flex;
-      flex: 1;
-      overflow: hidden;
-    }
+    /* ── Layout ────────────────────────────────────────── */
+    #app { display: flex; flex: 1; overflow: hidden; }
 
-    /* ── Sidebar ── */
+    /* ── Sidebar ───────────────────────────────────────── */
     #sidebar {
       width: 270px;
       min-width: 270px;
@@ -95,22 +91,16 @@
       flex-direction: column;
       overflow: hidden;
     }
-
     #sidebar-header {
-      padding: 14px 12px 10px;
+      padding: 12px 12px 8px;
       border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
     }
-
-    #search-wrap {
-      position: relative;
-    }
+    #search-wrap { position: relative; }
     #search-wrap .icon {
-      position: absolute;
-      left: 10px; top: 50%;
+      position: absolute; left: 10px; top: 50%;
       transform: translateY(-50%);
-      color: var(--text-muted);
-      font-size: 13px;
-      pointer-events: none;
+      color: var(--text-muted); font-size: 13px; pointer-events: none;
     }
     #search {
       width: 100%;
@@ -118,57 +108,61 @@
       background: var(--bg3);
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      color: var(--text);
-      font-size: 13px;
-      outline: none;
+      color: var(--text); font-size: 13px; outline: none;
       transition: border-color 0.15s;
     }
     #search:focus { border-color: var(--accent); }
     #search::placeholder { color: var(--text-muted); }
 
-    #filter-chips {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 5px;
-      margin-top: 10px;
-    }
-    .chip {
-      padding: 3px 10px;
-      border-radius: 12px;
+    #game-count {
       font-size: 11px;
-      font-weight: 600;
-      cursor: pointer;
-      border: 1px solid var(--border);
-      background: transparent;
       color: var(--text-muted);
-      transition: all 0.15s;
+      margin-top: 7px;
+      text-align: right;
     }
-    .chip:hover { border-color: var(--accent); color: var(--text); }
-    .chip.active { background: var(--accent); border-color: var(--accent); color: #fff; }
 
     #game-list {
       flex: 1;
       overflow-y: auto;
-      padding: 8px 0;
+      padding: 6px 0;
     }
     #game-list::-webkit-scrollbar { width: 4px; }
     #game-list::-webkit-scrollbar-track { background: transparent; }
     #game-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
 
-    .category-label {
-      padding: 6px 14px 3px;
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 0.8px;
-      text-transform: uppercase;
+    /* Loading spinner */
+    #loading-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+      gap: 12px;
       color: var(--text-muted);
+      font-size: 12px;
+    }
+    .spinner {
+      width: 24px; height: 24px;
+      border: 3px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    #no-results {
+      display: none;
+      padding: 20px;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 12px;
     }
 
     .game-item {
       display: flex;
       align-items: center;
       gap: 10px;
-      padding: 8px 14px;
+      padding: 7px 12px;
       cursor: pointer;
       border-radius: 6px;
       margin: 1px 6px;
@@ -177,16 +171,51 @@
     .game-item:hover  { background: var(--bg3); }
     .game-item.active { background: var(--accent); }
     .game-item.active .game-name { color: #fff; }
-    .game-item.active .game-cat  { color: rgba(255,255,255,0.65); }
+    .game-item.active .game-exe  { color: rgba(255,255,255,0.65); }
+    .game-item.running::before {
+      content: '';
+      position: absolute;
+      right: 18px;
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--green);
+    }
+    .game-item { position: relative; }
 
-    .game-emoji { font-size: 18px; width: 24px; text-align: center; flex-shrink: 0; }
+    .game-icon-wrap {
+      width: 32px; height: 32px;
+      flex-shrink: 0;
+      border-radius: 6px;
+      overflow: hidden;
+      background: var(--bg3);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+    }
+    .game-icon-wrap img {
+      width: 32px; height: 32px;
+      object-fit: cover;
+      border-radius: 6px;
+      display: block;
+    }
     .game-info  { flex: 1; min-width: 0; }
     .game-name  { font-size: 13px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .game-cat   { font-size: 11px; color: var(--text-muted); margin-top: 1px; }
+    .game-exe   { font-size: 10px; color: var(--text-muted); margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
+    #more-results {
+      padding: 8px 14px;
+      font-size: 11px;
+      color: var(--text-muted);
+      text-align: center;
+      display: none;
+    }
+
+    #sidebar-footer {
+      border-top: 1px solid var(--border);
+      padding: 8px 10px;
+      flex-shrink: 0;
+    }
     #add-custom-btn {
-      margin: 8px 10px;
-      padding: 9px;
+      padding: 8px;
       background: transparent;
       border: 1px dashed var(--border);
       border-radius: var(--radius);
@@ -195,11 +224,19 @@
       cursor: pointer;
       transition: all 0.15s;
       text-align: center;
-      width: calc(100% - 20px);
+      width: 100%;
     }
     #add-custom-btn:hover { border-color: var(--accent); color: var(--accent); }
 
-    /* ── Main panel ── */
+    #api-status {
+      font-size: 10px;
+      color: var(--text-muted);
+      text-align: center;
+      margin-top: 5px;
+    }
+    #api-status.fallback { color: var(--yellow); }
+
+    /* ── Main panel ─────────────────────────────────────── */
     #main {
       flex: 1;
       display: flex;
@@ -207,175 +244,6 @@
       overflow: hidden;
       background: var(--bg);
     }
-
-    #game-header {
-      padding: 22px 24px 16px;
-      border-bottom: 1px solid var(--border);
-      flex-shrink: 0;
-    }
-    #game-header .game-title-row {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    #selected-emoji { font-size: 36px; }
-    #selected-name  { font-size: 22px; font-weight: 700; }
-    #selected-badge {
-      padding: 2px 8px;
-      border-radius: 10px;
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 0.5px;
-      background: var(--bg3);
-      color: var(--text-muted);
-      text-transform: uppercase;
-    }
-
-    /* Status dot */
-    #status-row {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-top: 6px;
-    }
-    #status-dot {
-      width: 8px; height: 8px;
-      border-radius: 50%;
-      background: var(--text-muted);
-      transition: background 0.3s;
-    }
-    #status-dot.active  { background: var(--green); }
-    #status-dot.error   { background: var(--red); }
-    #status-text { font-size: 12px; color: var(--text-muted); }
-    #timer-text { font-size: 12px; color: var(--text-muted); margin-left: auto; font-variant-numeric: tabular-nums; }
-
-    /* Panel content */
-    #panel-content {
-      flex: 1;
-      overflow-y: auto;
-      padding: 20px 24px;
-      display: grid;
-      grid-template-columns: 1fr 280px;
-      gap: 20px;
-    }
-    #panel-content::-webkit-scrollbar { width: 4px; }
-    #panel-content::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
-
-    /* Fields */
-    .field-group { display: flex; flex-direction: column; gap: 14px; }
-    .field label {
-      display: block;
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.5px;
-      text-transform: uppercase;
-      color: var(--text-muted);
-      margin-bottom: 5px;
-    }
-    .field input {
-      width: 100%;
-      padding: 9px 12px;
-      background: var(--bg2);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      color: var(--text);
-      font-size: 13px;
-      outline: none;
-      transition: border-color 0.15s;
-    }
-    .field input:focus { border-color: var(--accent); }
-    .field input::placeholder { color: var(--text-muted); }
-    .field .hint { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
-
-    /* Buttons */
-    .btn-row { display: flex; gap: 10px; margin-top: 6px; }
-    .btn {
-      padding: 10px 20px;
-      border-radius: var(--radius);
-      border: none;
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background 0.15s, opacity 0.15s;
-      display: flex; align-items: center; gap: 7px;
-    }
-    .btn:disabled { opacity: 0.45; cursor: not-allowed; }
-    .btn-primary { background: var(--accent); color: #fff; }
-    .btn-primary:not(:disabled):hover { background: var(--accent-h); }
-    .btn-danger  { background: var(--red); color: #fff; }
-    .btn-danger:not(:disabled):hover  { background: var(--red-h); }
-    .btn-ghost   { background: var(--bg2); color: var(--text); border: 1px solid var(--border); }
-    .btn-ghost:not(:disabled):hover   { background: var(--bg3); }
-
-    /* Discord preview card */
-    #preview-card {
-      background: var(--bg2);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 14px;
-      align-self: start;
-    }
-    #preview-card .preview-label {
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 0.8px;
-      text-transform: uppercase;
-      color: var(--text-muted);
-      margin-bottom: 10px;
-    }
-    .discord-profile {
-      background: var(--bg3);
-      border-radius: 6px;
-      overflow: hidden;
-      padding-bottom: 12px;
-    }
-    .discord-banner { height: 52px; background: linear-gradient(135deg, #5865f2 0%, #23a55a 100%); }
-    .discord-avatar-wrap {
-      padding: 0 12px;
-      margin-top: -20px;
-      display: flex;
-      align-items: flex-end;
-      gap: 8px;
-    }
-    .discord-avatar {
-      width: 44px; height: 44px;
-      border-radius: 50%;
-      border: 3px solid var(--bg3);
-      background: var(--accent);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 20px;
-      flex-shrink: 0;
-    }
-    .discord-username { font-size: 14px; font-weight: 700; margin-bottom: 2px; }
-    .discord-tag { font-size: 11px; color: var(--text-muted); }
-    .discord-activity {
-      margin: 10px 12px 0;
-      background: var(--bg);
-      border-radius: 6px;
-      padding: 10px;
-    }
-    .discord-activity .act-label {
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 0.8px;
-      text-transform: uppercase;
-      color: var(--text-muted);
-      margin-bottom: 6px;
-    }
-    .act-body { display: flex; gap: 10px; align-items: flex-start; }
-    .act-img {
-      width: 42px; height: 42px;
-      border-radius: 6px;
-      background: var(--accent);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 22px;
-      flex-shrink: 0;
-    }
-    .act-info {}
-    .act-name   { font-size: 13px; font-weight: 600; }
-    .act-detail { font-size: 12px; color: var(--text-muted); margin-top: 2px; word-break: break-word; }
-    .act-state  { font-size: 12px; color: var(--text-muted); margin-top: 1px; }
-    .act-time   { font-size: 11px; color: var(--text-muted); margin-top: 3px; }
 
     /* Empty state */
     #empty-state {
@@ -388,17 +256,247 @@
       gap: 10px;
       font-size: 13px;
     }
-    #empty-state .icon { font-size: 48px; }
+    #empty-state .icon { font-size: 52px; }
+    #empty-state strong { color: var(--text); font-size: 15px; }
 
-    /* ── Modal ── */
+    /* Game view */
+    #game-view {
+      flex: 1;
+      display: none;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* Game header */
+    #game-header {
+      padding: 18px 24px 14px;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    .game-title-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    #hdr-icon-wrap {
+      width: 60px; height: 60px;
+      border-radius: 12px;
+      overflow: hidden;
+      background: var(--bg2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 30px;
+      flex-shrink: 0;
+    }
+    #hdr-icon-wrap img {
+      width: 60px; height: 60px;
+      object-fit: cover;
+      display: block;
+    }
+    #hdr-name { font-size: 20px; font-weight: 700; }
+    #hdr-exe  { font-size: 12px; color: var(--text-muted); margin-top: 3px; font-family: monospace; }
+
+    /* Status row */
+    #status-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    #status-dot {
+      width: 9px; height: 9px;
+      border-radius: 50%;
+      background: var(--text-muted);
+      transition: background 0.3s;
+      flex-shrink: 0;
+    }
+    #status-dot.active   { background: var(--green); }
+    #status-dot.scanning { background: var(--yellow); animation: pulse 1s ease-in-out infinite; }
+    #status-dot.error    { background: var(--red); }
+    @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.4; } }
+
+    #status-text  { font-size: 12px; color: var(--text-muted); }
+    #status-text.active   { color: var(--green); }
+    #status-text.scanning { color: var(--yellow); }
+    #status-text.error    { color: var(--red); }
+
+    #elapsed-text {
+      margin-left: auto;
+      font-size: 12px;
+      color: var(--text-muted);
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Panel content */
+    #panel-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 18px 24px;
+      display: grid;
+      grid-template-columns: 1fr 256px;
+      gap: 20px;
+      align-items: start;
+    }
+    #panel-content::-webkit-scrollbar { width: 4px; }
+    #panel-content::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+    /* Left column */
+    .field-group { display: flex; flex-direction: column; gap: 14px; }
+
+    .field label {
+      display: block;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 5px;
+    }
+    .field select {
+      width: 100%;
+      padding: 9px 12px;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text);
+      font-size: 13px;
+      outline: none;
+      cursor: pointer;
+      transition: border-color 0.15s;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23949ba4' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      padding-right: 30px;
+    }
+    .field select:focus { border-color: var(--accent); }
+    .field .hint { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+
+    .btn-row { display: flex; gap: 10px; }
+    .btn {
+      padding: 10px 20px;
+      border-radius: var(--radius);
+      border: none;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s, opacity 0.15s;
+      display: flex; align-items: center; gap: 7px;
+      flex-shrink: 0;
+    }
+    .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-primary:not(:disabled):hover { background: var(--accent-h); }
+    .btn-danger  { background: var(--red); color: #fff; }
+    .btn-danger:not(:disabled):hover  { background: var(--red-h); }
+    .btn-ghost   { background: var(--bg2); color: var(--text); border: 1px solid var(--border); }
+    .btn-ghost:not(:disabled):hover   { background: var(--bg3); }
+
+    /* Info box */
+    .info-box {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: var(--radius);
+      padding: 12px 14px;
+    }
+    .info-box .info-title {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--accent);
+      margin-bottom: 6px;
+    }
+    .info-box .info-text {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+    .info-box code {
+      background: var(--bg3);
+      padding: 1px 5px;
+      border-radius: 4px;
+      font-size: 11px;
+      color: var(--text);
+    }
+
+    /* Right column — quest tracker */
+    #quest-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+    }
+    #quest-card .card-title {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 14px;
+    }
+    .quest-time-display {
+      font-size: 28px;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      color: var(--text);
+      letter-spacing: -0.5px;
+      margin-bottom: 4px;
+    }
+    .quest-goal {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+    .progress-bar-wrap {
+      background: var(--bg3);
+      border-radius: 4px;
+      height: 6px;
+      overflow: hidden;
+      margin-bottom: 14px;
+    }
+    #progress-bar {
+      height: 100%;
+      background: var(--green);
+      border-radius: 4px;
+      width: 0%;
+      transition: width 1s linear;
+    }
+    .quest-state-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    .quest-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--text-muted);
+    }
+    .quest-dot.active   { background: var(--green); }
+    .quest-dot.scanning { background: var(--yellow); animation: pulse 1s ease-in-out infinite; }
+
+    #quest-complete-banner {
+      display: none;
+      margin-top: 12px;
+      background: rgba(35, 165, 90, 0.15);
+      border: 1px solid var(--green);
+      border-radius: 6px;
+      padding: 10px 12px;
+      font-size: 12px;
+      color: var(--green);
+      text-align: center;
+      font-weight: 600;
+    }
+
+    /* ── Modal ─────────────────────────────────────────── */
     #modal-backdrop {
       display: none;
-      position: fixed;
-      inset: 0;
+      position: fixed; inset: 0;
       background: rgba(0,0,0,0.6);
       z-index: 100;
-      align-items: center;
-      justify-content: center;
+      align-items: center; justify-content: center;
     }
     #modal-backdrop.open { display: flex; }
     #modal {
@@ -407,50 +505,42 @@
       border-radius: 12px;
       width: 420px;
       padding: 24px;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
+      display: flex; flex-direction: column; gap: 14px;
     }
     #modal h2 { font-size: 18px; font-weight: 700; }
-    #modal .field { display: flex; flex-direction: column; }
+    #modal .field input {
+      width: 100%;
+      padding: 9px 12px;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text); font-size: 13px; outline: none;
+      transition: border-color 0.15s;
+    }
+    #modal .field input:focus { border-color: var(--accent); }
+    #modal .field input::placeholder { color: var(--text-muted); }
     #modal .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 4px; }
 
-    /* ── Toast ── */
+    /* ── Toast ─────────────────────────────────────────── */
     #toast-container {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      z-index: 200;
-      pointer-events: none;
+      position: fixed; bottom: 20px; right: 20px;
+      display: flex; flex-direction: column; gap: 8px;
+      z-index: 200; pointer-events: none;
     }
     .toast {
       padding: 10px 16px;
       border-radius: var(--radius);
-      font-size: 13px;
-      font-weight: 500;
+      font-size: 13px; font-weight: 500;
       color: #fff;
-      opacity: 0;
-      transform: translateY(12px);
+      opacity: 0; transform: translateY(12px);
       transition: opacity 0.25s, transform 0.25s;
-      pointer-events: none;
-      max-width: 280px;
+      pointer-events: none; max-width: 300px;
     }
     .toast.show { opacity: 1; transform: translateY(0); }
     .toast.success { background: var(--green); }
     .toast.error   { background: var(--red); }
     .toast.info    { background: var(--accent); }
-
-    /* No results */
-    #no-results {
-      display: none;
-      padding: 20px 14px;
-      color: var(--text-muted);
-      font-size: 12px;
-      text-align: center;
-    }
+    .toast.warn    { background: var(--yellow); color: #000; }
   </style>
 </head>
 <body>
@@ -477,20 +567,23 @@
         <span class="icon">🔍</span>
         <input id="search" type="text" placeholder="Search games…" autocomplete="off" />
       </div>
-      <div id="filter-chips">
-        <button class="chip active" data-cat="All">All</button>
-        <button class="chip" data-cat="Mobile">Mobile</button>
-        <button class="chip" data-cat="PC">PC</button>
-        <button class="chip" data-cat="Console">Console</button>
-        <button class="chip" data-cat="Custom">Custom</button>
-      </div>
+      <div id="game-count"></div>
     </div>
 
     <div id="game-list">
+      <div id="loading-state">
+        <div class="spinner"></div>
+        <span>Loading games from Discord…</span>
+      </div>
       <div id="no-results">No games found</div>
     </div>
 
-    <button id="add-custom-btn">＋ Add Custom Game</button>
+    <div id="more-results"></div>
+
+    <div id="sidebar-footer">
+      <button id="add-custom-btn">＋ Add Custom Game</button>
+      <div id="api-status"></div>
+    </div>
   </aside>
 
   <!-- Main -->
@@ -498,71 +591,63 @@
     <div id="empty-state">
       <span class="icon">🎮</span>
       <strong>Select a game to get started</strong>
-      <span>Your Discord activity will update in real time</span>
+      <span>PresencePal runs a dummy process Discord detects as the real game</span>
     </div>
 
-    <div id="game-view" style="display:none; flex:1; flex-direction:column; overflow:hidden;">
+    <div id="game-view">
       <div id="game-header">
         <div class="game-title-row">
-          <span id="selected-emoji">🎮</span>
-          <span id="selected-name">Game Name</span>
-          <span id="selected-badge">Mobile</span>
+          <div id="hdr-icon-wrap">🎮</div>
+          <div>
+            <div id="hdr-name">Game</div>
+            <div id="hdr-exe">—</div>
+          </div>
         </div>
         <div id="status-row">
           <div id="status-dot"></div>
           <span id="status-text">Not active</span>
-          <span id="timer-text"></span>
+          <span id="elapsed-text"></span>
         </div>
       </div>
 
       <div id="panel-content">
+        <!-- Left: controls -->
         <div class="field-group">
           <div class="field">
-            <label>Details (line 1)</label>
-            <input id="input-details" type="text" placeholder="What are you doing?" maxlength="128" />
-            <span class="hint">Shows under the game name in Discord</span>
+            <label>Executable to launch</label>
+            <select id="exe-select"></select>
+            <span class="hint">Discord detects this process name as the real game</span>
           </div>
-          <div class="field">
-            <label>State (line 2)</label>
-            <input id="input-state" type="text" placeholder="Optional second line" maxlength="128" />
-          </div>
-          <div class="field">
-            <label>Discord Application Client ID</label>
-            <input id="input-clientid" type="text" placeholder="432980957394370572" maxlength="32" />
-            <span class="hint">Use your own App ID for a custom image</span>
-          </div>
+
           <div class="btn-row">
-            <button id="btn-play" class="btn btn-primary">▶ Set Activity</button>
+            <button id="btn-play" class="btn btn-primary">▶ Launch</button>
             <button id="btn-stop" class="btn btn-danger" disabled>■ Stop</button>
-            <button id="btn-test" class="btn btn-ghost">⚡ Test Connection</button>
+          </div>
+
+          <div class="info-box">
+            <div class="info-title">ℹ How it works</div>
+            <div class="info-text">
+              PresencePal copies a tiny stub <code>runner.exe</code>, renames it to
+              <code id="info-exe-name">game.exe</code>, then launches it from the correct folder.
+              Discord sees the process name and registers it as the real game — counting
+              your Quest progress. Keep it running for <strong>15 minutes</strong> to complete most Quests.
+            </div>
           </div>
         </div>
 
-        <!-- Discord preview -->
-        <div id="preview-card">
-          <div class="preview-label">Discord Preview</div>
-          <div class="discord-profile">
-            <div class="discord-banner"></div>
-            <div class="discord-avatar-wrap">
-              <div class="discord-avatar">🦊</div>
-              <div>
-                <div class="discord-username">foxmanhwa</div>
-                <div class="discord-tag">Playing a game</div>
-              </div>
-            </div>
-            <div class="discord-activity">
-              <div class="act-label">Playing a Game</div>
-              <div class="act-body">
-                <div class="act-img" id="preview-emoji">🎮</div>
-                <div class="act-info">
-                  <div class="act-name" id="preview-name">Game</div>
-                  <div class="act-detail" id="preview-details">—</div>
-                  <div class="act-state" id="preview-state"></div>
-                  <div class="act-time" id="preview-time"></div>
-                </div>
-              </div>
-            </div>
+        <!-- Right: quest tracker -->
+        <div id="quest-card">
+          <div class="card-title">Quest Tracker</div>
+          <div class="quest-time-display" id="quest-time">0:00</div>
+          <div class="quest-goal">Goal: 15:00 &nbsp;·&nbsp; <span id="quest-pct">0%</span></div>
+          <div class="progress-bar-wrap">
+            <div id="progress-bar"></div>
           </div>
+          <div class="quest-state-row">
+            <div class="quest-dot" id="quest-dot"></div>
+            <span id="quest-state-text">Not started</span>
+          </div>
+          <div id="quest-complete-banner">🎉 Quest complete! You can stop now.</div>
         </div>
       </div>
     </div>
@@ -575,22 +660,18 @@
     <h2>Add Custom Game</h2>
     <div class="field">
       <label>Game Name</label>
-      <input id="modal-name" type="text" placeholder="e.g. My Favorite Game" />
+      <input id="modal-name"    type="text" placeholder="e.g. My Game" />
     </div>
     <div class="field">
-      <label>Emoji</label>
-      <input id="modal-emoji" type="text" placeholder="🎮" maxlength="4" />
+      <label>Executable Name (e.g. MyGame.exe)</label>
+      <input id="modal-exe"     type="text" placeholder="game.exe" />
     </div>
     <div class="field">
-      <label>Default Details</label>
-      <input id="modal-details" type="text" placeholder="Playing the game…" />
-    </div>
-    <div class="field">
-      <label>Client ID</label>
-      <input id="modal-clientid" type="text" placeholder="432980957394370572" />
+      <label>Discord App ID</label>
+      <input id="modal-appid"   type="text" placeholder="Leave blank to use a random ID" />
     </div>
     <div class="modal-actions">
-      <button class="btn btn-ghost" id="modal-cancel">Cancel</button>
+      <button class="btn btn-ghost"   id="modal-cancel">Cancel</button>
       <button class="btn btn-primary" id="modal-add">Add Game</button>
     </div>
   </div>
@@ -599,277 +680,422 @@
 <!-- Toasts -->
 <div id="toast-container"></div>
 
+<!-- Fallback game list -->
 <script src="games.js"></script>
+
 <script>
   const api = window.presencepal;
-  let allGames = [...GAMES];
-  let selectedGame = null;
-  let activeGame = null;
-  let currentFilter = 'All';
-  let timerInterval = null;
-  let startTime = null;
 
-  // ── Toast ──────────────────────────────────────────
+  // ── State ────────────────────────────────────────────
+  let allGames       = [];
+  let selectedGame   = null;
+  let activeGame     = null;
+  let scanInterval   = null;
+  let questInterval  = null;
+  let questSeconds   = 0;
+  let QUEST_GOAL     = 900; // 15 minutes in seconds
+  const DISPLAY_LIMIT = 150;
+  const runningSet   = new Set(); // appIds currently running
+
+  // ── Toast ─────────────────────────────────────────────
   function toast(msg, type = 'info', duration = 3000) {
     const el = document.createElement('div');
     el.className = `toast ${type}`;
     el.textContent = msg;
     document.getElementById('toast-container').appendChild(el);
-    requestAnimationFrame(() => { requestAnimationFrame(() => el.classList.add('show')); });
+    requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add('show')));
     setTimeout(() => {
       el.classList.remove('show');
       setTimeout(() => el.remove(), 300);
     }, duration);
   }
 
-  // ── Timer ──────────────────────────────────────────
-  function startTimer() {
-    startTime = Date.now();
-    timerInterval = setInterval(updateTimer, 1000);
-    updateTimer();
-  }
-  function stopTimer() {
-    clearInterval(timerInterval);
-    timerInterval = null;
-    startTime = null;
-    document.getElementById('timer-text').textContent = '';
-    document.getElementById('preview-time').textContent = '';
-  }
-  function updateTimer() {
-    if (!startTime) return;
-    const s = Math.floor((Date.now() - startTime) / 1000);
-    const h = Math.floor(s / 3600);
-    const m = Math.floor((s % 3600) / 60);
-    const sec = s % 60;
-    const str = h > 0
-      ? `${h}:${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`
-      : `${m}:${String(sec).padStart(2,'0')}`;
-    document.getElementById('timer-text').textContent = str + ' elapsed';
-    document.getElementById('preview-time').textContent = str + ' elapsed';
+  // ── Icon helpers ──────────────────────────────────────
+  function iconUrl(id, hash) {
+    if (!hash) return null;
+    return `https://cdn.discordapp.com/app-icons/${id}/${hash}.png?size=64`;
   }
 
-  // ── Status ─────────────────────────────────────────
-  function setStatus(state, text) {
-    const dot  = document.getElementById('status-dot');
-    const span = document.getElementById('status-text');
-    dot.className = `${state}`;
-    span.textContent = text;
+  function makeIconEl(id, hash, fallback = '🎮', size = 32) {
+    const wrap = document.createElement('div');
+    wrap.className = 'game-icon-wrap';
+    wrap.style.cssText = `width:${size}px;height:${size}px;font-size:${Math.round(size*0.55)}px`;
+
+    if (hash) {
+      const img = document.createElement('img');
+      img.src = iconUrl(id, hash);
+      img.width = size; img.height = size;
+      img.onerror = () => { img.remove(); wrap.textContent = fallback; };
+      wrap.appendChild(img);
+    } else {
+      wrap.textContent = fallback;
+    }
+    return wrap;
   }
 
-  // ── Preview update ─────────────────────────────────
-  function updatePreview() {
-    if (!selectedGame) return;
-    document.getElementById('preview-emoji').textContent   = selectedGame.emoji;
-    document.getElementById('preview-name').textContent    = selectedGame.name;
-    document.getElementById('preview-details').textContent = document.getElementById('input-details').value || '—';
-    document.getElementById('preview-state').textContent   = document.getElementById('input-state').value || '';
+  // ── Normalize games ───────────────────────────────────
+  function normalizeApiGame(g) {
+    const winExes = (g.executables || [])
+      .filter(e => e.os === 'win32')
+      .sort((a, b) => (a.is_launcher ? 1 : 0) - (b.is_launcher ? 1 : 0));
+    return {
+      id:         g.id,
+      name:       g.name,
+      icon:       g.icon || null,
+      winExes,
+      primaryExe: winExes[0] || null,
+      source:     'api',
+    };
   }
 
-  // ── Render game list ───────────────────────────────
+  function normalizeFallbackGame(g) {
+    return {
+      id:         g.id,
+      name:       g.name,
+      icon:       null,
+      emoji:      g.emoji || '🎮',
+      winExes:    g.exeName ? [{ name: g.exeName, is_launcher: false }] : [],
+      primaryExe: g.exeName ? { name: g.exeName } : null,
+      source:     'fallback',
+    };
+  }
+
+  // ── Load games ────────────────────────────────────────
+  async function loadGames() {
+    const loadingEl  = document.getElementById('loading-state');
+    const apiStatus  = document.getElementById('api-status');
+    const noResults  = document.getElementById('no-results');
+    noResults.style.display = 'none';
+
+    const res = await api.fetchGames();
+
+    if (res.success && Array.isArray(res.games) && res.games.length > 0) {
+      allGames = res.games
+        .map(normalizeApiGame)
+        .filter(g => g.winExes.length > 0) // only games Discord can detect on Windows
+        .sort((a, b) => a.name.localeCompare(b.name));
+
+      apiStatus.textContent = `${allGames.length.toLocaleString()} verified Discord games`;
+      apiStatus.className   = '';
+    } else {
+      // Fall back to hardcoded games.js list
+      allGames = (typeof GAMES !== 'undefined' ? GAMES : []).map(normalizeFallbackGame);
+      apiStatus.textContent = '⚠ Offline — showing built-in list';
+      apiStatus.className   = 'fallback';
+      if (!res.success) toast(`Could not reach Discord API: ${res.error}`, 'warn', 5000);
+    }
+
+    loadingEl.style.display = 'none';
+    renderList();
+  }
+
+  // ── Render list ───────────────────────────────────────
+  function getFilteredGames() {
+    const q = document.getElementById('search').value.trim().toLowerCase();
+    if (!q) return allGames;
+    return allGames.filter(g => g.name.toLowerCase().includes(q));
+  }
+
   function renderList() {
-    const query     = document.getElementById('search').value.toLowerCase();
     const list      = document.getElementById('game-list');
     const noResults = document.getElementById('no-results');
-    list.innerHTML  = '';
+    const moreEl    = document.getElementById('more-results');
+    const countEl   = document.getElementById('game-count');
 
-    const filtered = allGames.filter(g => {
-      const matchCat  = currentFilter === 'All' || g.category === currentFilter;
-      const matchName = g.name.toLowerCase().includes(query);
-      return matchCat && matchName;
-    });
+    // Remove existing game items only
+    list.querySelectorAll('.game-item').forEach(el => el.remove());
+    noResults.style.display = 'none';
+    moreEl.style.display    = 'none';
+
+    const filtered = getFilteredGames();
+    const shown    = filtered.slice(0, DISPLAY_LIMIT);
+
+    countEl.textContent = filtered.length
+      ? `${filtered.length.toLocaleString()} game${filtered.length === 1 ? '' : 's'}`
+      : '';
 
     if (filtered.length === 0) {
       noResults.style.display = 'block';
       list.appendChild(noResults);
       return;
     }
-    noResults.style.display = 'none';
 
-    // Group by category
-    const groups = {};
-    filtered.forEach(g => {
-      if (!groups[g.category]) groups[g.category] = [];
-      groups[g.category].push(g);
-    });
+    shown.forEach(game => list.appendChild(makeGameItem(game)));
 
-    Object.entries(groups).forEach(([cat, games]) => {
-      const label = document.createElement('div');
-      label.className = 'category-label';
-      label.textContent = cat;
-      list.appendChild(label);
-
-      games.forEach(game => {
-        const el = document.createElement('div');
-        el.className = 'game-item' + (selectedGame?.id === game.id ? ' active' : '');
-        el.innerHTML = `
-          <span class="game-emoji">${game.emoji}</span>
-          <div class="game-info">
-            <div class="game-name">${game.name}</div>
-            <div class="game-cat">${game.category}</div>
-          </div>`;
-        el.addEventListener('click', () => selectGame(game));
-        list.appendChild(el);
-      });
-    });
+    if (filtered.length > DISPLAY_LIMIT) {
+      moreEl.style.display = 'block';
+      moreEl.textContent   = `Showing ${DISPLAY_LIMIT} of ${filtered.length.toLocaleString()} — refine search to narrow down`;
+    }
   }
 
-  // ── Select game ────────────────────────────────────
+  function makeGameItem(game) {
+    const el = document.createElement('div');
+    el.className = 'game-item' +
+      (selectedGame?.id === game.id ? ' active'   : '') +
+      (runningSet.has(game.id)      ? ' running'  : '');
+    el.dataset.id = game.id;
+
+    const iconWrap = makeIconEl(game.id, game.icon, game.emoji || '🎮', 32);
+
+    const info = document.createElement('div');
+    info.className = 'game-info';
+
+    const nameEl = document.createElement('div');
+    nameEl.className = 'game-name';
+    nameEl.textContent = game.name;
+
+    const exeEl = document.createElement('div');
+    exeEl.className = 'game-exe';
+    exeEl.textContent = game.primaryExe?.name || (game.source === 'fallback' ? 'No exe info' : '');
+
+    info.appendChild(nameEl);
+    info.appendChild(exeEl);
+    el.appendChild(iconWrap);
+    el.appendChild(info);
+    el.addEventListener('click', () => selectGame(game));
+    return el;
+  }
+
+  // ── Select game ───────────────────────────────────────
   function selectGame(game) {
     selectedGame = game;
 
     document.getElementById('empty-state').style.display  = 'none';
     document.getElementById('game-view').style.display    = 'flex';
 
-    document.getElementById('selected-emoji').textContent = game.emoji;
-    document.getElementById('selected-name').textContent  = game.name;
-    document.getElementById('selected-badge').textContent = game.category;
-
-    document.getElementById('input-details').value  = game.details || '';
-    document.getElementById('input-state').value    = game.state   || '';
-    document.getElementById('input-clientid').value = game.clientId || '432980957394370572';
-
-    // If a different game is active, status should reflect it
-    if (activeGame && activeGame.id !== game.id) {
-      setStatus('', 'Not active for this game');
-    } else if (activeGame && activeGame.id === game.id) {
-      setStatus('active', 'Activity is live');
+    // Header
+    const hdrWrap = document.getElementById('hdr-icon-wrap');
+    hdrWrap.innerHTML = '';
+    const iconEl = makeIconEl(game.id, game.icon, game.emoji || '🎮', 60);
+    iconEl.style.cssText = 'width:60px;height:60px;border-radius:12px;font-size:30px;background:var(--bg2);display:flex;align-items:center;justify-content:center;';
+    // Reuse the inner content
+    hdrWrap.style.cssText = '';
+    if (game.icon) {
+      const img = document.createElement('img');
+      img.src = iconUrl(game.id, game.icon);
+      img.width = 60; img.height = 60;
+      img.style.cssText = 'width:60px;height:60px;object-fit:cover;border-radius:12px;display:block;';
+      img.onerror = () => { img.remove(); hdrWrap.textContent = game.emoji || '🎮'; };
+      hdrWrap.appendChild(img);
     } else {
-      setStatus('', 'Not active');
+      hdrWrap.textContent = game.emoji || '🎮';
     }
 
-    updatePreview();
-    renderList();
+    document.getElementById('hdr-name').textContent = game.name;
+
+    // Populate exe select
+    const sel = document.getElementById('exe-select');
+    sel.innerHTML = '';
+    if (game.winExes.length > 0) {
+      game.winExes.forEach(exe => {
+        const opt = document.createElement('option');
+        opt.value       = exe.name;
+        opt.textContent = exe.name + (exe.is_launcher ? ' (launcher)' : '');
+        sel.appendChild(opt);
+      });
+      document.getElementById('hdr-exe').textContent = game.winExes[0].name;
+      document.getElementById('info-exe-name').textContent = game.winExes[0].name;
+      document.getElementById('btn-play').disabled = false;
+    } else {
+      const opt = document.createElement('option');
+      opt.textContent = 'No Windows executable available';
+      sel.appendChild(opt);
+      document.getElementById('hdr-exe').textContent = 'No executable info';
+      document.getElementById('info-exe-name').textContent = 'unknown.exe';
+      document.getElementById('btn-play').disabled = true;
+    }
+
+    sel.onchange = () => {
+      document.getElementById('hdr-exe').textContent      = sel.value;
+      document.getElementById('info-exe-name').textContent = sel.value;
+    };
+
+    // Status reflects whether THIS game is already running
+    if (runningSet.has(game.id)) {
+      setStatus('active', 'Running');
+    } else {
+      setStatus('', 'Not active');
+      document.getElementById('btn-stop').disabled = true;
+    }
+
+    renderList(); // refresh active state in sidebar
   }
 
-  // ── Play ───────────────────────────────────────────
+  // ── Status helpers ────────────────────────────────────
+  function setStatus(type, text) {
+    const dot  = document.getElementById('status-dot');
+    const span = document.getElementById('status-text');
+    dot.className   = type;
+    span.className  = type;
+    span.textContent = text;
+  }
+
+  function setQuestState(type, text) {
+    const dot  = document.getElementById('quest-dot');
+    const span = document.getElementById('quest-state-text');
+    dot.className  = `quest-dot ${type}`;
+    span.textContent = text;
+  }
+
+  // ── Quest timer ───────────────────────────────────────
+  function startQuestTimer() {
+    questSeconds = 0;
+    clearInterval(questInterval);
+    document.getElementById('quest-complete-banner').style.display = 'none';
+    questInterval = setInterval(() => {
+      questSeconds++;
+      const m   = Math.floor(questSeconds / 60);
+      const s   = questSeconds % 60;
+      const pct = Math.min(100, Math.round((questSeconds / QUEST_GOAL) * 100));
+      document.getElementById('quest-time').textContent    = `${m}:${String(s).padStart(2,'0')}`;
+      document.getElementById('quest-pct').textContent     = `${pct}%`;
+      document.getElementById('progress-bar').style.width  = `${pct}%`;
+      document.getElementById('elapsed-text').textContent  = `${m}:${String(s).padStart(2,'0')} elapsed`;
+
+      if (questSeconds >= QUEST_GOAL && !document.getElementById('quest-complete-banner').style.display.includes('flex')) {
+        document.getElementById('quest-complete-banner').style.display = 'block';
+        toast('🎉 Quest complete! You can stop the process now.', 'success', 6000);
+      }
+    }, 1000);
+  }
+
+  function stopQuestTimer() {
+    clearInterval(questInterval);
+    questInterval  = null;
+    questSeconds   = 0;
+    document.getElementById('quest-time').textContent   = '0:00';
+    document.getElementById('quest-pct').textContent    = '0%';
+    document.getElementById('progress-bar').style.width = '0%';
+    document.getElementById('elapsed-text').textContent = '';
+    document.getElementById('quest-complete-banner').style.display = 'none';
+  }
+
+  // ── Scan countdown ────────────────────────────────────
+  function startScanCountdown(onDone) {
+    let n = 5;
+    setStatus('scanning', `Discord is scanning… (${n})`);
+    setQuestState('scanning', 'Waiting for Discord to detect…');
+    clearInterval(scanInterval);
+    scanInterval = setInterval(() => {
+      n--;
+      if (n <= 0) {
+        clearInterval(scanInterval);
+        scanInterval = null;
+        onDone();
+      } else {
+        setStatus('scanning', `Discord is scanning… (${n})`);
+      }
+    }, 1000);
+  }
+
+  // ── Play ──────────────────────────────────────────────
   document.getElementById('btn-play').addEventListener('click', async () => {
     if (!selectedGame) return;
+    const exeName = document.getElementById('exe-select').value;
+    if (!exeName) return;
+
     const btn = document.getElementById('btn-play');
     btn.disabled = true;
     btn.textContent = '…';
 
-    const presence = {
-      name:         selectedGame.name,
-      details:      document.getElementById('input-details').value,
-      state:        document.getElementById('input-state').value,
-      largeImageKey: selectedGame.imageKey || 'default',
-    };
-    const clientId = document.getElementById('input-clientid').value.trim() || '432980957394370572';
-
-    const res = await api.setPresence({ clientId, presence });
+    const res = await api.launchGame({
+      appId:    selectedGame.id,
+      exeName,
+      exePath:  '',
+      gameName: selectedGame.name,
+    });
 
     btn.disabled = false;
-    btn.innerHTML = '▶ Set Activity';
+    btn.innerHTML = '▶ Launch';
 
-    if (res.success) {
-      activeGame = selectedGame;
-      setStatus('active', 'Activity is live');
-      document.getElementById('btn-stop').disabled = false;
-      startTimer();
-      toast(`Now showing: ${selectedGame.name}`, 'success');
-    } else {
-      setStatus('error', 'Failed to connect');
-      toast(res.error || 'Could not connect to Discord', 'error', 4000);
+    if (!res.success) {
+      setStatus('error', 'Launch failed');
+      toast(res.error, 'error', 5000);
+      return;
     }
+
+    runningSet.add(selectedGame.id);
+    document.getElementById('btn-stop').disabled = false;
+    renderList();
+
+    startScanCountdown(() => {
+      setStatus('active', 'Running — Quest timer active');
+      setQuestState('active', 'Quest timer counting');
+      startQuestTimer();
+    });
+
+    toast(`Launched ${exeName}`, 'success');
   });
 
-  // ── Stop ───────────────────────────────────────────
+  // ── Stop ──────────────────────────────────────────────
   document.getElementById('btn-stop').addEventListener('click', async () => {
-    const res = await api.clearPresence();
+    if (!selectedGame) return;
+    const exeName = document.getElementById('exe-select').value;
+
+    clearInterval(scanInterval);
+    scanInterval = null;
+
+    const res = await api.stopGame({ appId: selectedGame.id, exeName });
+
+    runningSet.delete(selectedGame.id);
+    stopQuestTimer();
+    setStatus('', 'Not active');
+    setQuestState('', 'Not started');
+    document.getElementById('btn-stop').disabled = true;
+    renderList();
+
     if (res.success) {
-      activeGame = null;
-      setStatus('', 'Not active');
-      document.getElementById('btn-stop').disabled = true;
-      stopTimer();
-      toast('Activity cleared', 'info');
+      toast('Process stopped', 'info');
     } else {
-      toast(res.error || 'Failed to clear activity', 'error');
+      toast(`Stop failed: ${res.error}`, 'error');
     }
   });
 
-  // ── Test connection ────────────────────────────────
-  document.getElementById('btn-test').addEventListener('click', async () => {
-    const btn = document.getElementById('btn-test');
-    btn.disabled = true;
-    btn.textContent = 'Testing…';
-    const clientId = document.getElementById('input-clientid').value.trim() || '432980957394370572';
-    const res = await api.testDiscord(clientId);
-    btn.disabled = false;
-    btn.innerHTML = '⚡ Test Connection';
-    if (res.success) {
-      toast('Discord connected ✓', 'success');
-    } else {
-      toast(res.error || 'Discord not reachable', 'error', 4000);
-    }
-  });
-
-  // ── Live preview on input ──────────────────────────
-  ['input-details', 'input-state'].forEach(id => {
-    document.getElementById(id).addEventListener('input', updatePreview);
-  });
-
-  // ── Search & filter ────────────────────────────────
+  // ── Search ────────────────────────────────────────────
   document.getElementById('search').addEventListener('input', renderList);
 
-  document.getElementById('filter-chips').addEventListener('click', e => {
-    const chip = e.target.closest('.chip');
-    if (!chip) return;
-    currentFilter = chip.dataset.cat;
-    document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
-    chip.classList.add('active');
-    renderList();
-  });
-
-  // ── Add Custom Game modal ──────────────────────────
+  // ── Custom game modal ─────────────────────────────────
   document.getElementById('add-custom-btn').addEventListener('click', () => {
     document.getElementById('modal-backdrop').classList.add('open');
     document.getElementById('modal-name').focus();
   });
-
   document.getElementById('modal-cancel').addEventListener('click', () => {
     document.getElementById('modal-backdrop').classList.remove('open');
   });
-
   document.getElementById('modal-backdrop').addEventListener('click', e => {
     if (e.target === document.getElementById('modal-backdrop'))
       document.getElementById('modal-backdrop').classList.remove('open');
   });
-
   document.getElementById('modal-add').addEventListener('click', () => {
-    const name     = document.getElementById('modal-name').value.trim();
-    const emoji    = document.getElementById('modal-emoji').value.trim() || '🎮';
-    const details  = document.getElementById('modal-details').value.trim();
-    const clientId = document.getElementById('modal-clientid').value.trim() || '432980957394370572';
+    const name   = document.getElementById('modal-name').value.trim();
+    const exeRaw = document.getElementById('modal-exe').value.trim();
+    const appId  = document.getElementById('modal-appid').value.trim() || String(Date.now());
 
-    if (!name) { toast('Please enter a game name', 'error'); return; }
+    if (!name)   { toast('Game name is required', 'error'); return; }
+    if (!exeRaw) { toast('Executable name is required', 'error'); return; }
 
+    const exeName = exeRaw.endsWith('.exe') ? exeRaw : exeRaw + '.exe';
     const game = {
-      id: 'custom-' + Date.now(),
-      name, emoji, details,
-      state: '',
-      clientId,
-      category: 'Custom',
-      imageKey: 'default',
+      id:         appId,
+      name,
+      icon:       null,
+      emoji:      '🎮',
+      winExes:    [{ name: exeName, is_launcher: false }],
+      primaryExe: { name: exeName },
+      source:     'custom',
     };
 
-    allGames.push(game);
+    allGames.unshift(game);
     document.getElementById('modal-backdrop').classList.remove('open');
-    document.getElementById('modal-name').value    = '';
-    document.getElementById('modal-emoji').value   = '';
-    document.getElementById('modal-details').value = '';
-    document.getElementById('modal-clientid').value = '';
+    ['modal-name', 'modal-exe', 'modal-appid'].forEach(id => document.getElementById(id).value = '');
 
-    currentFilter = 'Custom';
-    document.querySelectorAll('.chip').forEach(c => {
-      c.classList.toggle('active', c.dataset.cat === 'Custom');
-    });
     renderList();
     selectGame(game);
     toast(`"${name}" added!`, 'success');
   });
 
-  // Init
-  renderList();
+  // ── Boot ──────────────────────────────────────────────
+  loadGames();
 </script>
 </body>
 </html>

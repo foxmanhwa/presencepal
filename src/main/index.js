@@ -1,11 +1,10 @@
-const { app, BrowserWindow, ipcMain, shell } = require('electron');
+const { app, BrowserWindow, ipcMain, net } = require('electron');
 const path = require('path');
-const DiscordRPC = require('discord-rpc');
+const fs = require('fs');
+const { spawn, exec } = require('child_process');
 
 let mainWindow;
-let rpcClient = null;
-let rpcClientId = null;
-let startTimestamp = null;
+const runningProcesses = new Map(); // appId -> { child, exeName }
 
 function createWindow() {
   mainWindow = new BrowserWindow({
@@ -26,75 +25,90 @@ function createWindow() {
   mainWindow.loadFile(path.join(__dirname, '../renderer/index.html'));
 }
 
-async function connectRPC(clientId) {
-  if (rpcClient && rpcClientId === clientId) return { success: true };
+// ── fetch-games ──────────────────────────────────────────────────────────────
+ipcMain.handle('fetch-games', async () => {
+  try {
+    const res = await net.fetch('https://discord.com/api/v9/applications/detectable');
+    if (!res.ok) throw new Error(`Discord API returned HTTP ${res.status}`);
+    const games = await res.json();
+    return { success: true, games };
+  } catch (err) {
+    return { success: false, error: err.message };
+  }
+});
 
-  if (rpcClient) {
-    try { await rpcClient.destroy(); } catch {}
-    rpcClient = null;
+// ── launch-game ──────────────────────────────────────────────────────────────
+ipcMain.handle('launch-game', async (_, { appId, exeName, exePath, gameName }) => {
+  const userData = app.getPath('userData');
+  const subdir   = exePath || exeName.replace(/\.exe$/i, '');
+  const gameDir  = path.join(userData, 'games', String(appId), subdir);
+
+  // Kill any prior instance for this app
+  const existing = runningProcesses.get(String(appId));
+  if (existing) {
+    try { existing.child.kill(); } catch {}
+    runningProcesses.delete(String(appId));
   }
 
-  return new Promise((resolve) => {
-    const client = new DiscordRPC.Client({ transport: 'ipc' });
+  try {
+    fs.mkdirSync(gameDir, { recursive: true });
+  } catch (err) {
+    return { success: false, error: `Could not create game folder: ${err.message}` };
+  }
 
-    client.on('ready', () => {
-      rpcClient = client;
-      rpcClientId = clientId;
-      resolve({ success: true });
+  const runnerSrc = path.join(__dirname, '../../assets/runner.exe');
+  if (!fs.existsSync(runnerSrc)) {
+    return { success: false, error: 'assets/runner.exe is missing — re-download the app from GitHub.' };
+  }
+
+  const targetExe = path.join(gameDir, exeName);
+  try {
+    fs.copyFileSync(runnerSrc, targetExe);
+  } catch (err) {
+    return { success: false, error: `Could not copy runner: ${err.message}` };
+  }
+
+  try {
+    const child = spawn(targetExe, ['--title', gameName, '--tray'], {
+      cwd: gameDir,
+      detached: false,
     });
+    runningProcesses.set(String(appId), { child, exeName });
+    child.on('exit', () => runningProcesses.delete(String(appId)));
+    return { success: true };
+  } catch (err) {
+    return { success: false, error: `Failed to launch: ${err.message}` };
+  }
+});
 
-    client.login({ clientId }).catch((err) => {
-      resolve({ success: false, error: err.message });
-    });
-
-    setTimeout(() => {
-      if (!rpcClient) resolve({ success: false, error: 'Connection timed out. Is Discord running?' });
-    }, 8000);
+// ── stop-game ────────────────────────────────────────────────────────────────
+ipcMain.handle('stop-game', async (_, { appId, exeName }) => {
+  // Primary: taskkill by exe name (catches all instances)
+  const killByName = () => new Promise((resolve, reject) => {
+    exec(`taskkill /F /IM "${exeName}"`, (err) => (err ? reject(err) : resolve()));
   });
-}
-
-ipcMain.handle('test-discord', async (_, clientId) => {
-  return connectRPC(clientId);
-});
-
-ipcMain.handle('set-presence', async (_, { clientId, presence }) => {
-  const conn = await connectRPC(clientId);
-  if (!conn.success) return conn;
-
-  startTimestamp = Date.now();
 
   try {
-    await rpcClient.setActivity({
-      details: presence.details || undefined,
-      state: presence.state || undefined,
-      startTimestamp,
-      largeImageKey: presence.largeImageKey || 'default',
-      largeImageText: presence.name,
-      instance: false,
-    });
-    return { success: true };
-  } catch (err) {
-    return { success: false, error: err.message };
+    await killByName();
+  } catch {
+    // Fallback: kill the child handle we stored
+    const stored = runningProcesses.get(String(appId));
+    if (stored?.child) {
+      try { stored.child.kill(); } catch {}
+    }
   }
+
+  runningProcesses.delete(String(appId));
+  return { success: true };
 });
 
-ipcMain.handle('clear-presence', async () => {
-  if (!rpcClient) return { success: true };
-  try {
-    await rpcClient.clearActivity();
-    startTimestamp = null;
-    return { success: true };
-  } catch (err) {
-    return { success: false, error: err.message };
-  }
-});
-
+// ── window controls ──────────────────────────────────────────────────────────
 ipcMain.on('window-minimize', () => mainWindow?.minimize());
-ipcMain.on('window-close', () => mainWindow?.close());
+ipcMain.on('window-close',    () => mainWindow?.close());
 
 app.whenReady().then(createWindow);
 
 app.on('window-all-closed', () => {
-  if (rpcClient) rpcClient.destroy().catch(() => {});
+  runningProcesses.forEach(({ child }) => { try { child.kill(); } catch {} });
   if (process.platform !== 'darwin') app.quit();
 });
