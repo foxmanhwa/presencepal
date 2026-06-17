@@ -47,9 +47,11 @@ ipcMain.handle('fetch-games', async () => {
 
 // ── launch-game ──────────────────────────────────────────────────────────────
 ipcMain.handle('launch-game', async (_, { appId, exeName, exePath, gameName }) => {
-  const userData = app.getPath('userData');
-  const subdir   = exePath || exeName.replace(/\.exe$/i, '');
-  const gameDir  = path.join(userData, 'games', String(appId), subdir);
+  const userData    = app.getPath('userData');
+  // Discord API exe names sometimes include subdirs (e.g. "bin/game.exe") — use basename only
+  const exeBasename = path.basename(exeName);
+  const subdir      = exePath || exeBasename.replace(/\.exe$/i, '');
+  const gameDir     = path.join(userData, 'games', String(appId), subdir);
 
   // Kill any prior instance for this app
   const existing = runningProcesses.get(String(appId));
@@ -71,7 +73,7 @@ ipcMain.handle('launch-game', async (_, { appId, exeName, exePath, gameName }) =
     return { success: false, error: `runner.exe not found at: ${runnerSrc}` };
   }
 
-  const targetExe = path.join(gameDir, exeName);
+  const targetExe = path.join(gameDir, exeBasename);
   try {
     fs.copyFileSync(runnerSrc, targetExe);
   } catch (err) {
@@ -93,9 +95,9 @@ ipcMain.handle('launch-game', async (_, { appId, exeName, exePath, gameName }) =
 
 // ── stop-game ────────────────────────────────────────────────────────────────
 ipcMain.handle('stop-game', async (_, { appId, exeName }) => {
-  // Primary: taskkill by exe name (catches all instances)
+  const exeBasename = path.basename(exeName);
   const killByName = () => new Promise((resolve, reject) => {
-    exec(`taskkill /F /IM "${exeName}"`, (err) => (err ? reject(err) : resolve()));
+    exec(`taskkill /F /IM "${exeBasename}"`, (err) => (err ? reject(err) : resolve()));
   });
 
   try {
