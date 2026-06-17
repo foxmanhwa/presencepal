@@ -1,0 +1,20 @@
+{
+  "name": "presencepal",
+  "version": "0.1.0",
+  "description": "Set your Discord game activity from any game — even mobile games",
+  "author": "foxmanhwa",
+  "license": "MIT",
+  "main": "src/main/index.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron . --dev",
+    "build": "electron-builder"
+  },
+  "keywords": [
+    "discord",
+    "rich-presence",
+    "electron"
+  ],
+  "devDependencies": {},
+  "dependencies": {}
+}
