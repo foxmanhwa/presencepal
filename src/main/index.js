@@ -47,11 +47,17 @@ ipcMain.handle('fetch-games', async () => {
 
 // ── launch-game ──────────────────────────────────────────────────────────────
 ipcMain.handle('launch-game', async (_, { appId, exeName, exePath, gameName }) => {
-  const userData    = app.getPath('userData');
-  // Discord API exe names sometimes include subdirs (e.g. "bin/game.exe") — use basename only
-  const exeBasename = path.basename(exeName);
-  const subdir      = exePath || exeBasename.replace(/\.exe$/i, '');
-  const gameDir     = path.join(userData, 'games', String(appId), subdir);
+  const userData = app.getPath('userData');
+  // exeName: the exact process name Discord detects (e.g. "wuthering waves.exe")
+  // exePath: full API path string used to derive the working directory
+  //          (e.g. "wuthering waves game/client/binaries/win64/client-win64-shipping.exe")
+  const fullPath  = exePath || exeName;
+  const dirPart   = path.dirname(fullPath);
+  const subdir    = dirPart !== '.' ? dirPart : exeName.replace(/\.exe$/i, '');
+  const gameDir   = path.join(userData, 'games', String(appId), subdir);
+
+  console.log('[presencepal] folder:', gameDir);
+  console.log('[presencepal] exe:   ', exeName);
 
   // Kill any prior instance for this app
   const existing = runningProcesses.get(String(appId));
@@ -73,7 +79,7 @@ ipcMain.handle('launch-game', async (_, { appId, exeName, exePath, gameName }) =
     return { success: false, error: `runner.exe not found at: ${runnerSrc}` };
   }
 
-  const targetExe = path.join(gameDir, exeBasename);
+  const targetExe = path.join(gameDir, exeName);
   try {
     fs.copyFileSync(runnerSrc, targetExe);
   } catch (err) {
@@ -95,9 +101,9 @@ ipcMain.handle('launch-game', async (_, { appId, exeName, exePath, gameName }) =
 
 // ── stop-game ────────────────────────────────────────────────────────────────
 ipcMain.handle('stop-game', async (_, { appId, exeName }) => {
-  const exeBasename = path.basename(exeName);
+  // exeName is the exact process name used at launch (already the basename, no path separators)
   const killByName = () => new Promise((resolve, reject) => {
-    exec(`taskkill /F /IM "${exeBasename}"`, (err) => (err ? reject(err) : resolve()));
+    exec(`taskkill /F /IM "${exeName}"`, (err) => (err ? reject(err) : resolve()));
   });
 
   try {

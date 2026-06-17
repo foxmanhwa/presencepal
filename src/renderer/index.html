@@ -683,8 +683,14 @@
   let scanInterval    = null;
   let elapsedInterval = null;
   let elapsedSeconds  = 0;
+  let activeExeName   = null; // exact process name used to launch (for stop)
   const DISPLAY_LIMIT = 150;
   const runningSet    = new Set(); // appIds currently running
+
+  // Extract the filename portion from a path-like exe name
+  function exeBasename(name) {
+    return name.replace(/\\/g, '/').split('/').pop();
+  }
 
   // ── Toast ─────────────────────────────────────────────
   function toast(msg, type = 'info', duration = 3000) {
@@ -835,7 +841,7 @@
 
     const exeEl = document.createElement('div');
     exeEl.className = 'game-exe';
-    exeEl.textContent = game.primaryExe?.name || (game.source === 'fallback' ? 'No exe info' : '');
+    exeEl.textContent = game.primaryExe ? exeBasename(game.primaryExe.name) : (game.source === 'fallback' ? 'No exe info' : '');
 
     info.appendChild(nameEl);
     info.appendChild(exeEl);
@@ -872,31 +878,34 @@
 
     document.getElementById('hdr-name').textContent = game.name;
 
-    // Populate exe select
+    // Populate exe select — value = index, label = short detection name
     const sel = document.getElementById('exe-select');
     sel.innerHTML = '';
     if (game.winExes.length > 0) {
-      game.winExes.forEach(exe => {
+      game.winExes.forEach((exe, i) => {
         const opt = document.createElement('option');
-        opt.value       = exe.name;
-        opt.textContent = exe.name + (exe.is_launcher ? ' (launcher)' : '');
+        opt.value       = i;
+        opt.textContent = exeBasename(exe.name) + (exe.is_launcher ? ' (launcher)' : '');
         sel.appendChild(opt);
       });
-      document.getElementById('hdr-exe').textContent = game.winExes[0].name;
-      document.getElementById('info-exe-name').textContent = game.winExes[0].name;
-      document.getElementById('btn-play').disabled = false;
+      const firstName = exeBasename(game.winExes[0].name);
+      document.getElementById('hdr-exe').textContent        = firstName;
+      document.getElementById('info-exe-name').textContent  = firstName;
+      document.getElementById('btn-play').disabled          = false;
     } else {
       const opt = document.createElement('option');
       opt.textContent = 'No Windows executable available';
       sel.appendChild(opt);
-      document.getElementById('hdr-exe').textContent = 'No executable info';
+      document.getElementById('hdr-exe').textContent       = 'No executable info';
       document.getElementById('info-exe-name').textContent = 'unknown.exe';
-      document.getElementById('btn-play').disabled = true;
+      document.getElementById('btn-play').disabled         = true;
     }
 
     sel.onchange = () => {
-      document.getElementById('hdr-exe').textContent      = sel.value;
-      document.getElementById('info-exe-name').textContent = sel.value;
+      const exe  = game.winExes[parseInt(sel.value, 10)];
+      const name = exe ? exeBasename(exe.name) : '';
+      document.getElementById('hdr-exe').textContent       = name;
+      document.getElementById('info-exe-name').textContent = name;
     };
 
     // Status reflects whether THIS game is already running
@@ -976,8 +985,14 @@
   // ── Play ──────────────────────────────────────────────
   document.getElementById('btn-play').addEventListener('click', async () => {
     if (!selectedGame) return;
-    const exeName = document.getElementById('exe-select').value;
-    if (!exeName) return;
+    const exeIdx = parseInt(document.getElementById('exe-select').value, 10);
+    const exeObj = selectedGame.winExes[exeIdx];
+    if (!exeObj) return;
+
+    // exeName = short process name Discord detects (basename of the API name field)
+    // exePath = full API name for deriving the working directory folder
+    const exeName = exeBasename(exeObj.name);
+    const exePath = exeObj.name;
 
     const btn = document.getElementById('btn-play');
     btn.disabled = true;
@@ -986,7 +1001,7 @@
     const res = await api.launchGame({
       appId:    selectedGame.id,
       exeName,
-      exePath:  '',
+      exePath,
       gameName: selectedGame.name,
     });
 
@@ -999,6 +1014,7 @@
       return;
     }
 
+    activeExeName = exeName;
     runningSet.add(selectedGame.id);
     document.getElementById('btn-stop').disabled = false;
     renderList();
@@ -1015,13 +1031,15 @@
   // ── Stop ──────────────────────────────────────────────
   document.getElementById('btn-stop').addEventListener('click', async () => {
     if (!selectedGame) return;
-    const exeName = document.getElementById('exe-select').value;
+    // Use the name that was actually used at launch time, not the current dropdown
+    const exeName = activeExeName || exeBasename(selectedGame.winExes[0]?.name || '');
 
     clearInterval(scanInterval);
     scanInterval = null;
 
     const res = await api.stopGame({ appId: selectedGame.id, exeName });
 
+    activeExeName = null;
     runningSet.delete(selectedGame.id);
     stopElapsed();
     setStatus('', 'Not active');
