@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PresencePal</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #1e1f22;
+      --bg2:       #2b2d31;
+      --bg3:       #313338;
+      --border:    #3d3f45;
+      --text:      #dbdee1;
+      --text-muted:#949ba4;
+      --accent:    #5865f2;
+      --accent-h:  #4752c4;
+      --green:     #23a55a;
+      --green-h:   #1a8a47;
+      --red:       #ed4245;
+      --red-h:     #c93b3e;
+      --radius:    8px;
+    }
+
+    html, body { height: 100%; overflow: hidden; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 14px;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      user-select: none;
+    }
+
+    /* ── Titlebar ── */
+    #titlebar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 38px;
+      padding: 0 12px;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      -webkit-app-region: drag;
+      flex-shrink: 0;
+    }
+    #titlebar .brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing: 0.3px;
+      color: var(--text);
+    }
+    #titlebar .brand .logo { font-size: 18px; }
+    #titlebar .brand .name span { color: var(--accent); }
+    #titlebar-controls {
+      display: flex;
+      gap: 6px;
+      -webkit-app-region: no-drag;
+    }
+    .tb-btn {
+      width: 26px; height: 26px;
+      border-radius: 50%;
+      border: none;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px;
+      transition: opacity 0.15s;
+      color: #fff;
+    }
+    .tb-btn:hover { opacity: 0.85; }
+    .tb-btn.minimize { background: #f0b429; }
+    .tb-btn.close    { background: var(--red); }
+
+    /* ── Layout ── */
+    #app {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    /* ── Sidebar ── */
+    #sidebar {
+      width: 270px;
+      min-width: 270px;
+      background: var(--bg2);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    #sidebar-header {
+      padding: 14px 12px 10px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    #search-wrap {
+      position: relative;
+    }
+    #search-wrap .icon {
+      position: absolute;
+      left: 10px; top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      font-size: 13px;
+      pointer-events: none;
+    }
+    #search {
+      width: 100%;
+      padding: 7px 10px 7px 30px;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text);
+      font-size: 13px;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    #search:focus { border-color: var(--accent); }
+    #search::placeholder { color: var(--text-muted); }
+
+    #filter-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-top: 10px;
+    }
+    .chip {
+      padding: 3px 10px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-muted);
+      transition: all 0.15s;
+    }
+    .chip:hover { border-color: var(--accent); color: var(--text); }
+    .chip.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+    #game-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 8px 0;
+    }
+    #game-list::-webkit-scrollbar { width: 4px; }
+    #game-list::-webkit-scrollbar-track { background: transparent; }
+    #game-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+    .category-label {
+      padding: 6px 14px 3px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .game-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 14px;
+      cursor: pointer;
+      border-radius: 6px;
+      margin: 1px 6px;
+      transition: background 0.1s;
+    }
+    .game-item:hover  { background: var(--bg3); }
+    .game-item.active { background: var(--accent); }
+    .game-item.active .game-name { color: #fff; }
+    .game-item.active .game-cat  { color: rgba(255,255,255,0.65); }
+
+    .game-emoji { font-size: 18px; width: 24px; text-align: center; flex-shrink: 0; }
+    .game-info  { flex: 1; min-width: 0; }
+    .game-name  { font-size: 13px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .game-cat   { font-size: 11px; color: var(--text-muted); margin-top: 1px; }
+
+    #add-custom-btn {
+      margin: 8px 10px;
+      padding: 9px;
+      background: transparent;
+      border: 1px dashed var(--border);
+      border-radius: var(--radius);
+      color: var(--text-muted);
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.15s;
+      text-align: center;
+      width: calc(100% - 20px);
+    }
+    #add-custom-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* ── Main panel ── */
+    #main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      background: var(--bg);
+    }
+
+    #game-header {
+      padding: 22px 24px 16px;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    #game-header .game-title-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    #selected-emoji { font-size: 36px; }
+    #selected-name  { font-size: 22px; font-weight: 700; }
+    #selected-badge {
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      background: var(--bg3);
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+
+    /* Status dot */
+    #status-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 6px;
+    }
+    #status-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--text-muted);
+      transition: background 0.3s;
+    }
+    #status-dot.active  { background: var(--green); }
+    #status-dot.error   { background: var(--red); }
+    #status-text { font-size: 12px; color: var(--text-muted); }
+    #timer-text { font-size: 12px; color: var(--text-muted); margin-left: auto; font-variant-numeric: tabular-nums; }
+
+    /* Panel content */
+    #panel-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px 24px;
+      display: grid;
+      grid-template-columns: 1fr 280px;
+      gap: 20px;
+    }
+    #panel-content::-webkit-scrollbar { width: 4px; }
+    #panel-content::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+    /* Fields */
+    .field-group { display: flex; flex-direction: column; gap: 14px; }
+    .field label {
+      display: block;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 5px;
+    }
+    .field input {
+      width: 100%;
+      padding: 9px 12px;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text);
+      font-size: 13px;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .field input:focus { border-color: var(--accent); }
+    .field input::placeholder { color: var(--text-muted); }
+    .field .hint { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+
+    /* Buttons */
+    .btn-row { display: flex; gap: 10px; margin-top: 6px; }
+    .btn {
+      padding: 10px 20px;
+      border-radius: var(--radius);
+      border: none;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s, opacity 0.15s;
+      display: flex; align-items: center; gap: 7px;
+    }
+    .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-primary:not(:disabled):hover { background: var(--accent-h); }
+    .btn-danger  { background: var(--red); color: #fff; }
+    .btn-danger:not(:disabled):hover  { background: var(--red-h); }
+    .btn-ghost   { background: var(--bg2); color: var(--text); border: 1px solid var(--border); }
+    .btn-ghost:not(:disabled):hover   { background: var(--bg3); }
+
+    /* Discord preview card */
+    #preview-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px;
+      align-self: start;
+    }
+    #preview-card .preview-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+    }
+    .discord-profile {
+      background: var(--bg3);
+      border-radius: 6px;
+      overflow: hidden;
+      padding-bottom: 12px;
+    }
+    .discord-banner { height: 52px; background: linear-gradient(135deg, #5865f2 0%, #23a55a 100%); }
+    .discord-avatar-wrap {
+      padding: 0 12px;
+      margin-top: -20px;
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+    }
+    .discord-avatar {
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      border: 3px solid var(--bg3);
+      background: var(--accent);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+    .discord-username { font-size: 14px; font-weight: 700; margin-bottom: 2px; }
+    .discord-tag { font-size: 11px; color: var(--text-muted); }
+    .discord-activity {
+      margin: 10px 12px 0;
+      background: var(--bg);
+      border-radius: 6px;
+      padding: 10px;
+    }
+    .discord-activity .act-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+    .act-body { display: flex; gap: 10px; align-items: flex-start; }
+    .act-img {
+      width: 42px; height: 42px;
+      border-radius: 6px;
+      background: var(--accent);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px;
+      flex-shrink: 0;
+    }
+    .act-info {}
+    .act-name   { font-size: 13px; font-weight: 600; }
+    .act-detail { font-size: 12px; color: var(--text-muted); margin-top: 2px; word-break: break-word; }
+    .act-state  { font-size: 12px; color: var(--text-muted); margin-top: 1px; }
+    .act-time   { font-size: 11px; color: var(--text-muted); margin-top: 3px; }
+
+    /* Empty state */
+    #empty-state {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
+      gap: 10px;
+      font-size: 13px;
+    }
+    #empty-state .icon { font-size: 48px; }
+
+    /* ── Modal ── */
+    #modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+    }
+    #modal-backdrop.open { display: flex; }
+    #modal {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      width: 420px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    #modal h2 { font-size: 18px; font-weight: 700; }
+    #modal .field { display: flex; flex-direction: column; }
+    #modal .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 4px; }
+
+    /* ── Toast ── */
+    #toast-container {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      z-index: 200;
+      pointer-events: none;
+    }
+    .toast {
+      padding: 10px 16px;
+      border-radius: var(--radius);
+      font-size: 13px;
+      font-weight: 500;
+      color: #fff;
+      opacity: 0;
+      transform: translateY(12px);
+      transition: opacity 0.25s, transform 0.25s;
+      pointer-events: none;
+      max-width: 280px;
+    }
+    .toast.show { opacity: 1; transform: translateY(0); }
+    .toast.success { background: var(--green); }
+    .toast.error   { background: var(--red); }
+    .toast.info    { background: var(--accent); }
+
+    /* No results */
+    #no-results {
+      display: none;
+      padding: 20px 14px;
+      color: var(--text-muted);
+      font-size: 12px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Titlebar -->
+<div id="titlebar">
+  <div class="brand">
+    <span class="logo">🎮</span>
+    <span class="name">Presence<span>Pal</span></span>
+  </div>
+  <div id="titlebar-controls">
+    <button class="tb-btn minimize" onclick="window.presencepal.minimize()" title="Minimize">&#8722;</button>
+    <button class="tb-btn close"    onclick="window.presencepal.close()"    title="Close">&#10005;</button>
+  </div>
+</div>
+
+<!-- App -->
+<div id="app">
+
+  <!-- Sidebar -->
+  <aside id="sidebar">
+    <div id="sidebar-header">
+      <div id="search-wrap">
+        <span class="icon">🔍</span>
+        <input id="search" type="text" placeholder="Search games…" autocomplete="off" />
+      </div>
+      <div id="filter-chips">
+        <button class="chip active" data-cat="All">All</button>
+        <button class="chip" data-cat="Mobile">Mobile</button>
+        <button class="chip" data-cat="PC">PC</button>
+        <button class="chip" data-cat="Console">Console</button>
+        <button class="chip" data-cat="Custom">Custom</button>
+      </div>
+    </div>
+
+    <div id="game-list">
+      <div id="no-results">No games found</div>
+    </div>
+
+    <button id="add-custom-btn">＋ Add Custom Game</button>
+  </aside>
+
+  <!-- Main -->
+  <main id="main">
+    <div id="empty-state">
+      <span class="icon">🎮</span>
+      <strong>Select a game to get started</strong>
+      <span>Your Discord activity will update in real time</span>
+    </div>
+
+    <div id="game-view" style="display:none; flex:1; flex-direction:column; overflow:hidden;">
+      <div id="game-header">
+        <div class="game-title-row">
+          <span id="selected-emoji">🎮</span>
+          <span id="selected-name">Game Name</span>
+          <span id="selected-badge">Mobile</span>
+        </div>
+        <div id="status-row">
+          <div id="status-dot"></div>
+          <span id="status-text">Not active</span>
+          <span id="timer-text"></span>
+        </div>
+      </div>
+
+      <div id="panel-content">
+        <div class="field-group">
+          <div class="field">
+            <label>Details (line 1)</label>
+            <input id="input-details" type="text" placeholder="What are you doing?" maxlength="128" />
+            <span class="hint">Shows under the game name in Discord</span>
+          </div>
+          <div class="field">
+            <label>State (line 2)</label>
+            <input id="input-state" type="text" placeholder="Optional second line" maxlength="128" />
+          </div>
+          <div class="field">
+            <label>Discord Application Client ID</label>
+            <input id="input-clientid" type="text" placeholder="432980957394370572" maxlength="32" />
+            <span class="hint">Use your own App ID for a custom image</span>
+          </div>
+          <div class="btn-row">
+            <button id="btn-play" class="btn btn-primary">▶ Set Activity</button>
+            <button id="btn-stop" class="btn btn-danger" disabled>■ Stop</button>
+            <button id="btn-test" class="btn btn-ghost">⚡ Test Connection</button>
+          </div>
+        </div>
+
+        <!-- Discord preview -->
+        <div id="preview-card">
+          <div class="preview-label">Discord Preview</div>
+          <div class="discord-profile">
+            <div class="discord-banner"></div>
+            <div class="discord-avatar-wrap">
+              <div class="discord-avatar">🦊</div>
+              <div>
+                <div class="discord-username">foxmanhwa</div>
+                <div class="discord-tag">Playing a game</div>
+              </div>
+            </div>
+            <div class="discord-activity">
+              <div class="act-label">Playing a Game</div>
+              <div class="act-body">
+                <div class="act-img" id="preview-emoji">🎮</div>
+                <div class="act-info">
+                  <div class="act-name" id="preview-name">Game</div>
+                  <div class="act-detail" id="preview-details">—</div>
+                  <div class="act-state" id="preview-state"></div>
+                  <div class="act-time" id="preview-time"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Add Custom Game Modal -->
+<div id="modal-backdrop">
+  <div id="modal">
+    <h2>Add Custom Game</h2>
+    <div class="field">
+      <label>Game Name</label>
+      <input id="modal-name" type="text" placeholder="e.g. My Favorite Game" />
+    </div>
+    <div class="field">
+      <label>Emoji</label>
+      <input id="modal-emoji" type="text" placeholder="🎮" maxlength="4" />
+    </div>
+    <div class="field">
+      <label>Default Details</label>
+      <input id="modal-details" type="text" placeholder="Playing the game…" />
+    </div>
+    <div class="field">
+      <label>Client ID</label>
+      <input id="modal-clientid" type="text" placeholder="432980957394370572" />
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" id="modal-cancel">Cancel</button>
+      <button class="btn btn-primary" id="modal-add">Add Game</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toasts -->
+<div id="toast-container"></div>
+
+<script src="games.js"></script>
+<script>
+  const api = window.presencepal;
+  let allGames = [...GAMES];
+  let selectedGame = null;
+  let activeGame = null;
+  let currentFilter = 'All';
+  let timerInterval = null;
+  let startTime = null;
+
+  // ── Toast ──────────────────────────────────────────
+  function toast(msg, type = 'info', duration = 3000) {
+    const el = document.createElement('div');
+    el.className = `toast ${type}`;
+    el.textContent = msg;
+    document.getElementById('toast-container').appendChild(el);
+    requestAnimationFrame(() => { requestAnimationFrame(() => el.classList.add('show')); });
+    setTimeout(() => {
+      el.classList.remove('show');
+      setTimeout(() => el.remove(), 300);
+    }, duration);
+  }
+
+  // ── Timer ──────────────────────────────────────────
+  function startTimer() {
+    startTime = Date.now();
+    timerInterval = setInterval(updateTimer, 1000);
+    updateTimer();
+  }
+  function stopTimer() {
+    clearInterval(timerInterval);
+    timerInterval = null;
+    startTime = null;
+    document.getElementById('timer-text').textContent = '';
+    document.getElementById('preview-time').textContent = '';
+  }
+  function updateTimer() {
+    if (!startTime) return;
+    const s = Math.floor((Date.now() - startTime) / 1000);
+    const h = Math.floor(s / 3600);
+    const m = Math.floor((s % 3600) / 60);
+    const sec = s % 60;
+    const str = h > 0
+      ? `${h}:${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`
+      : `${m}:${String(sec).padStart(2,'0')}`;
+    document.getElementById('timer-text').textContent = str + ' elapsed';
+    document.getElementById('preview-time').textContent = str + ' elapsed';
+  }
+
+  // ── Status ─────────────────────────────────────────
+  function setStatus(state, text) {
+    const dot  = document.getElementById('status-dot');
+    const span = document.getElementById('status-text');
+    dot.className = `${state}`;
+    span.textContent = text;
+  }
+
+  // ── Preview update ─────────────────────────────────
+  function updatePreview() {
+    if (!selectedGame) return;
+    document.getElementById('preview-emoji').textContent   = selectedGame.emoji;
+    document.getElementById('preview-name').textContent    = selectedGame.name;
+    document.getElementById('preview-details').textContent = document.getElementById('input-details').value || '—';
+    document.getElementById('preview-state').textContent   = document.getElementById('input-state').value || '';
+  }
+
+  // ── Render game list ───────────────────────────────
+  function renderList() {
+    const query = document.getElementById('search').value.toLowerCase();
+    const list  = document.getElementById('game-list');
+    list.innerHTML = '';
+
+    const filtered = allGames.filter(g => {
+      const matchCat  = currentFilter === 'All' || g.category === currentFilter;
+      const matchName = g.name.toLowerCase().includes(query);
+      return matchCat && matchName;
+    });
+
+    const noResults = document.getElementById('no-results');
+    if (filtered.length === 0) {
+      noResults.style.display = 'block';
+      list.appendChild(noResults);
+      return;
+    }
+    noResults.style.display = 'none';
+
+    // Group by category
+    const groups = {};
+    filtered.forEach(g => {
+      if (!groups[g.category]) groups[g.category] = [];
+      groups[g.category].push(g);
+    });
+
+    Object.entries(groups).forEach(([cat, games]) => {
+      const label = document.createElement('div');
+      label.className = 'category-label';
+      label.textContent = cat;
+      list.appendChild(label);
+
+      games.forEach(game => {
+        const el = document.createElement('div');
+        el.className = 'game-item' + (selectedGame?.id === game.id ? ' active' : '');
+        el.innerHTML = `
+          <span class="game-emoji">${game.emoji}</span>
+          <div class="game-info">
+            <div class="game-name">${game.name}</div>
+            <div class="game-cat">${game.category}</div>
+          </div>`;
+        el.addEventListener('click', () => selectGame(game));
+        list.appendChild(el);
+      });
+    });
+  }
+
+  // ── Select game ────────────────────────────────────
+  function selectGame(game) {
+    selectedGame = game;
+
+    document.getElementById('empty-state').style.display  = 'none';
+    document.getElementById('game-view').style.display    = 'flex';
+
+    document.getElementById('selected-emoji').textContent = game.emoji;
+    document.getElementById('selected-name').textContent  = game.name;
+    document.getElementById('selected-badge').textContent = game.category;
+
+    document.getElementById('input-details').value  = game.details || '';
+    document.getElementById('input-state').value    = game.state   || '';
+    document.getElementById('input-clientid').value = game.clientId || '432980957394370572';
+
+    // If a different game is active, status should reflect it
+    if (activeGame && activeGame.id !== game.id) {
+      setStatus('', 'Not active for this game');
+    } else if (activeGame && activeGame.id === game.id) {
+      setStatus('active', 'Activity is live');
+    } else {
+      setStatus('', 'Not active');
+    }
+
+    updatePreview();
+    renderList();
+  }
+
+  // ── Play ───────────────────────────────────────────
+  document.getElementById('btn-play').addEventListener('click', async () => {
+    if (!selectedGame) return;
+    const btn = document.getElementById('btn-play');
+    btn.disabled = true;
+    btn.textContent = '…';
+
+    const presence = {
+      name:         selectedGame.name,
+      details:      document.getElementById('input-details').value,
+      state:        document.getElementById('input-state').value,
+      largeImageKey: selectedGame.imageKey || 'default',
+    };
+    const clientId = document.getElementById('input-clientid').value.trim() || '432980957394370572';
+
+    const res = await api.setPresence({ clientId, presence });
+
+    btn.disabled = false;
+    btn.innerHTML = '▶ Set Activity';
+
+    if (res.success) {
+      activeGame = selectedGame;
+      setStatus('active', 'Activity is live');
+      document.getElementById('btn-stop').disabled = false;
+      startTimer();
+      toast(`Now showing: ${selectedGame.name}`, 'success');
+    } else {
+      setStatus('error', 'Failed to connect');
+      toast(res.error || 'Could not connect to Discord', 'error', 4000);
+    }
+  });
+
+  // ── Stop ───────────────────────────────────────────
+  document.getElementById('btn-stop').addEventListener('click', async () => {
+    const res = await api.clearPresence();
+    if (res.success) {
+      activeGame = null;
+      setStatus('', 'Not active');
+      document.getElementById('btn-stop').disabled = true;
+      stopTimer();
+      toast('Activity cleared', 'info');
+    } else {
+      toast(res.error || 'Failed to clear activity', 'error');
+    }
+  });
+
+  // ── Test connection ────────────────────────────────
+  document.getElementById('btn-test').addEventListener('click', async () => {
+    const btn = document.getElementById('btn-test');
+    btn.disabled = true;
+    btn.textContent = 'Testing…';
+    const clientId = document.getElementById('input-clientid').value.trim() || '432980957394370572';
+    const res = await api.testDiscord(clientId);
+    btn.disabled = false;
+    btn.innerHTML = '⚡ Test Connection';
+    if (res.success) {
+      toast('Discord connected ✓', 'success');
+    } else {
+      toast(res.error || 'Discord not reachable', 'error', 4000);
+    }
+  });
+
+  // ── Live preview on input ──────────────────────────
+  ['input-details', 'input-state'].forEach(id => {
+    document.getElementById(id).addEventListener('input', updatePreview);
+  });
+
+  // ── Search & filter ────────────────────────────────
+  document.getElementById('search').addEventListener('input', renderList);
+
+  document.getElementById('filter-chips').addEventListener('click', e => {
+    const chip = e.target.closest('.chip');
+    if (!chip) return;
+    currentFilter = chip.dataset.cat;
+    document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+    chip.classList.add('active');
+    renderList();
+  });
+
+  // ── Add Custom Game modal ──────────────────────────
+  document.getElementById('add-custom-btn').addEventListener('click', () => {
+    document.getElementById('modal-backdrop').classList.add('open');
+    document.getElementById('modal-name').focus();
+  });
+
+  document.getElementById('modal-cancel').addEventListener('click', () => {
+    document.getElementById('modal-backdrop').classList.remove('open');
+  });
+
+  document.getElementById('modal-backdrop').addEventListener('click', e => {
+    if (e.target === document.getElementById('modal-backdrop'))
+      document.getElementById('modal-backdrop').classList.remove('open');
+  });
+
+  document.getElementById('modal-add').addEventListener('click', () => {
+    const name     = document.getElementById('modal-name').value.trim();
+    const emoji    = document.getElementById('modal-emoji').value.trim() || '🎮';
+    const details  = document.getElementById('modal-details').value.trim();
+    const clientId = document.getElementById('modal-clientid').value.trim() || '432980957394370572';
+
+    if (!name) { toast('Please enter a game name', 'error'); return; }
+
+    const game = {
+      id: 'custom-' + Date.now(),
+      name, emoji, details,
+      state: '',
+      clientId,
+      category: 'Custom',
+      imageKey: 'default',
+    };
+
+    allGames.push(game);
+    document.getElementById('modal-backdrop').classList.remove('open');
+    document.getElementById('modal-name').value    = '';
+    document.getElementById('modal-emoji').value   = '';
+    document.getElementById('modal-details').value = '';
+    document.getElementById('modal-clientid').value = '';
+
+    currentFilter = 'Custom';
+    document.querySelectorAll('.chip').forEach(c => {
+      c.classList.toggle('active', c.dataset.cat === 'Custom');
+    });
+    renderList();
+    selectGame(game);
+    toast(`"${name}" added!`, 'success');
+  });
+
+  // Init
+  renderList();
+</script>
+</body>
+</html>
