@@ -33,6 +33,25 @@ As a side effect of how Discord detects games, running a game through PresencePa
 
 Download the latest installer or portable exe from the Releases page.
 
+## Windows Defender warning
+
+Windows may flag PresencePal as potentially harmful when you first run it. This is a false positive.
+
+The warning appears because PresencePal spawns a small background process named after a real game executable — the same technique antivirus software flags as suspicious, even when the intent is harmless. The source code is fully public and auditable at github.com/foxmanhwa/presencepal.
+
+To run it anyway:
+
+1. When Windows SmartScreen appears, click "More info"
+2. Click "Run anyway"
+
+Or if Windows Defender quarantined the file:
+
+1. Open Windows Security
+2. Go to Virus & threat protection > Protection history
+3. Find the PresencePal entry and click Allow
+
+This is a known limitation of unsigned open source applications. We are not able to fix it without purchasing a code signing certificate.
+
 ## Building from source
 
 ```
