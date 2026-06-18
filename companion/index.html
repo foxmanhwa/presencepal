@@ -477,6 +477,7 @@
   let pcIp        = localStorage.getItem('pp_ip') || '';
   let nowPlaying  = null;
   let filtered    = [...GAMES];
+  let pollInterval = null;
 
   // ── Toast ─────────────────────────────────────────────
   let toastTimer = null;
@@ -528,8 +529,29 @@
     tryConnect();
   }
 
+  // ── Status polling ────────────────────────────────────
+  function startPolling() {
+    stopPolling();
+    pollInterval = setInterval(async () => {
+      try {
+        const res  = await fetch(`http://${pcIp}:41235/status`, { signal: AbortSignal.timeout(3000) });
+        const data = await res.json();
+        if (data.success && (data.playing || null) !== nowPlaying) {
+          nowPlaying = data.playing || null;
+          renderNowPlaying();
+        }
+      } catch {}
+    }, 5000);
+  }
+
+  function stopPolling() {
+    clearInterval(pollInterval);
+    pollInterval = null;
+  }
+
   // ── Settings (back to connect) ────────────────────────
   document.getElementById('btn-settings').addEventListener('click', () => {
+    stopPolling();
     document.getElementById('connect-page').classList.add('active');
     document.getElementById('main-page').classList.remove('active');
     document.getElementById('ip-input').value = pcIp;
@@ -544,6 +566,7 @@
     document.getElementById('main-page').classList.add('active');
     renderNowPlaying();
     renderGrid(filtered);
+    startPolling();
   }
 
   function renderNowPlaying() {
