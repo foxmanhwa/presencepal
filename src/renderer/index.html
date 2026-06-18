@@ -69,7 +69,7 @@
       cursor: pointer;
       display: flex; align-items: center; justify-content: center;
       font-size: 11px;
-      transition: opacity 0.15s;
+      transition: opacity 0.15s ease-out;
       color: #fff;
     }
     .tb-btn:hover { opacity: 0.8; }
@@ -104,7 +104,7 @@
       color: var(--text);
       font-size: 13px;
       outline: none;
-      transition: border-color 0.15s;
+      transition: border-color 0.15s ease-out;
     }
     #search:focus-visible { border-color: var(--accent); outline: none; }
     #search::placeholder { color: var(--text-muted); }
@@ -114,9 +114,15 @@
       overflow-y: auto;
       padding-bottom: 6px;
     }
-    #sidebar-body::-webkit-scrollbar { width: 3px; }
-    #sidebar-body::-webkit-scrollbar-track { background: transparent; }
-    #sidebar-body::-webkit-scrollbar-thumb { background: var(--bg3); border-radius: 3px; }
+    #sidebar-body::-webkit-scrollbar,
+    #game-list::-webkit-scrollbar,
+    #game-view::-webkit-scrollbar { width: 3px; }
+    #sidebar-body::-webkit-scrollbar-track,
+    #game-list::-webkit-scrollbar-track,
+    #game-view::-webkit-scrollbar-track { background: transparent; }
+    #sidebar-body::-webkit-scrollbar-thumb,
+    #game-list::-webkit-scrollbar-thumb,
+    #game-view::-webkit-scrollbar-thumb { background: var(--bg3); border-radius: 3px; }
 
     .sidebar-section { padding-bottom: 4px; }
 
@@ -165,7 +171,7 @@
       cursor: pointer;
       border-radius: 6px;
       margin: 1px 6px;
-      transition: background 0.1s;
+      transition: background 0.1s ease-out;
       position: relative;
     }
     .game-item:hover { background: var(--bg3); }
@@ -209,20 +215,18 @@
       height: calc(100vh - 220px);
       overflow-y: auto;
     }
-    #game-list::-webkit-scrollbar { width: 3px; }
-    #game-list::-webkit-scrollbar-track { background: transparent; }
-    #game-list::-webkit-scrollbar-thumb { background: var(--bg3); border-radius: 3px; }
 
 
-    .game-info { flex: 1; min-width: 0; }
     .game-name {
+      flex: 1;
+      min-width: 0;
       font-size: 13px;
       font-weight: 500;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      color: #c8cdd4;
-      transition: color 0.1s;
+      color: var(--text-dim);
+      transition: color 0.1s ease-out;
     }
 
     /* Sidebar footer */
@@ -235,12 +239,12 @@
       padding: 7px 10px;
       width: 100%;
       background: transparent;
-      border: 1px dashed #1e2024;
+      border: 1px dashed var(--border);
       border-radius: var(--radius);
       color: var(--text-muted);
       font-size: 12px;
       cursor: pointer;
-      transition: border-color 0.15s, color 0.15s;
+      transition: border-color 0.15s ease-out, color 0.15s ease-out;
       text-align: center;
     }
     #add-custom-btn:hover { border-color: rgba(0,194,255,0.13); color: var(--accent); }
@@ -249,7 +253,7 @@
       font-size: 10px;
       color: var(--text-muted);
       text-align: center;
-      margin-top: 5px;
+      margin-top: 6px;
     }
     #api-status.fallback { color: var(--yellow); }
 
@@ -259,7 +263,6 @@
       display: flex;
       flex-direction: column;
       overflow: hidden;
-      background: var(--bg);
     }
 
     /* Empty state */
@@ -270,7 +273,6 @@
       align-items: center;
       justify-content: center;
       gap: 8px;
-      background: var(--bg);
     }
     #empty-state .app-name {
       font-size: 28px;
@@ -291,8 +293,6 @@
       flex-direction: column;
       overflow-y: auto;
     }
-    #game-view::-webkit-scrollbar { width: 3px; }
-    #game-view::-webkit-scrollbar-thumb { background: var(--bg3); border-radius: 3px; }
 
     /* Game header */
     #game-header {
@@ -312,12 +312,6 @@
     }
 
     /* 56px header icon */
-    #hdr-icon-container {
-      position: relative;
-      width: 56px;
-      height: 56px;
-      flex-shrink: 0;
-    }
     #hdr-icon-wrap {
       width: 56px; height: 56px;
       border-radius: 10px;
@@ -327,6 +321,7 @@
       font-size: 20px;
       font-weight: 700;
       color: rgba(255,255,255,0.75);
+      flex-shrink: 0;
     }
     #hdr-icon-wrap img {
       width: 56px; height: 56px;
@@ -365,7 +360,7 @@
       cursor: pointer;
       padding: 6px;
       border-radius: 6px;
-      transition: color 0.15s;
+      transition: color 0.15s ease-out;
       line-height: 1;
       flex-shrink: 0;
     }
@@ -382,7 +377,6 @@
     }
     .stat-box {
       background: var(--bg3);
-      border: 1px solid var(--border);
       border-radius: var(--radius);
       padding: 13px 16px;
     }
@@ -400,7 +394,7 @@
       gap: 6px;
       font-size: 14px;
       font-weight: 600;
-      color: #ffffff;
+      color: var(--text-bright);
     }
     .stat-mono {
       font-family: 'Consolas', 'Courier New', monospace;
@@ -437,7 +431,7 @@
       display: block;
       font-size: 10px;
       font-weight: 700;
-      letter-spacing: 0.05em;
+      letter-spacing: 0.1em;
       text-transform: uppercase;
       color: var(--text-muted);
       margin-bottom: 5px;
@@ -457,9 +451,9 @@
       background-repeat: no-repeat;
       background-position: right 10px center;
       padding-right: 28px;
-      transition: border-color 0.15s;
+      transition: border-color 0.15s ease-out;
     }
-    #exe-select:focus { border-color: var(--accent); }
+    #exe-select:focus-visible { border-color: var(--accent); }
 
     /* Launch area */
     #launch-area {
@@ -478,7 +472,7 @@
       font-size: 14px;
       font-weight: 600;
       cursor: pointer;
-      transition: background 0.15s, box-shadow 0.15s, opacity 0.15s;
+      transition: background 0.15s ease-out, box-shadow 0.15s ease-out, opacity 0.15s ease-out;
     }
     #btn-play:hover:not(:disabled) {
       background: var(--accent-h);
@@ -498,7 +492,7 @@
       font-size: 14px;
       font-weight: 600;
       cursor: pointer;
-      transition: background 0.15s;
+      transition: background 0.15s ease-out;
       white-space: nowrap;
       flex-shrink: 0;
     }
@@ -537,10 +531,11 @@
       font-size: 11px;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.05em;
+      letter-spacing: 0.1em;
       color: var(--text-muted);
       margin-bottom: 5px;
     }
+    .label-optional { font-weight: 400; text-transform: none; letter-spacing: 0; color: var(--text-muted); }
     #modal .field input {
       width: 100%;
       padding: 9px 12px;
@@ -548,9 +543,9 @@
       border: 1px solid var(--border2);
       border-radius: var(--radius);
       color: var(--text); font-size: 13px; outline: none;
-      transition: border-color 0.15s;
+      transition: border-color 0.15s ease-out;
     }
-    #modal .field input:focus { border-color: var(--accent); }
+    #modal .field input:focus-visible { border-color: var(--accent); }
     #modal .field input::placeholder { color: var(--text-muted); }
     #modal .modal-actions {
       display: flex; gap: 10px; justify-content: flex-end; margin-top: 4px;
@@ -562,7 +557,7 @@
       font-size: 13px;
       font-weight: 600;
       cursor: pointer;
-      transition: background 0.15s;
+      transition: background 0.15s ease-out;
     }
     .btn-primary { background: var(--accent); color: #000; }
     .btn-primary:hover { background: var(--accent-h); }
@@ -581,7 +576,7 @@
       font-size: 13px; font-weight: 500;
       color: #fff;
       opacity: 0; transform: translateY(10px);
-      transition: opacity 0.22s, transform 0.22s;
+      transition: opacity 0.22s ease-out, transform 0.22s ease-out;
       pointer-events: none; max-width: 300px;
     }
     .toast.show { opacity: 1; transform: translateY(0); }
@@ -589,6 +584,15 @@
     .toast.error   { background: #3a1a1e; border: 1px solid var(--red); color: var(--red); }
     .toast.info    { background: var(--bg3); border: 1px solid var(--border2); color: var(--text); }
     .toast.warn    { background: #3a2e0a; border: 1px solid var(--yellow); color: var(--yellow); }
+
+    #fav-section, #recent-section { display: none; }
+
+    .field-hint {
+      display: block;
+      margin-top: 4px;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
 
     @media (prefers-reduced-motion: reduce) {
       .spinner { animation: none; border-top-color: var(--accent); }
@@ -618,13 +622,13 @@
 
     <div id="sidebar-body">
       <!-- Favorites -->
-      <div id="fav-section" class="sidebar-section" style="display:none">
+      <div id="fav-section" class="sidebar-section">
         <div class="section-label">Favorites</div>
         <div id="fav-list"></div>
       </div>
 
       <!-- Recent -->
-      <div id="recent-section" class="sidebar-section" style="display:none">
+      <div id="recent-section" class="sidebar-section">
         <div class="section-label">Recent</div>
         <div id="recent-list"></div>
       </div>
@@ -657,9 +661,7 @@
     <div id="game-view">
       <div id="game-header">
         <div class="hdr-left">
-          <div id="hdr-icon-container">
-            <div id="hdr-icon-wrap"></div>
-          </div>
+          <div id="hdr-icon-wrap"></div>
           <div id="hdr-text">
             <div id="hdr-name">Game</div>
             <div id="hdr-exe-badge">game.exe</div>
@@ -708,13 +710,13 @@
     </div>
     <div class="field">
       <label for="modal-exe">Executable Name</label>
-      <input id="modal-exe" type="text" placeholder="e.g. clashroyale.exe" />
-      <small id="modal-exe-hint" style="display:block;margin-top:4px;font-size:11px;color:var(--text-muted)">The exact .exe Discord expects. Find it at discord.com/api/v9/applications/detectable.</small>
+      <input id="modal-exe" type="text" placeholder="e.g. clashroyale.exe" aria-describedby="modal-exe-hint" />
+      <small id="modal-exe-hint" class="field-hint">The exact .exe Discord expects. Find it at discord.com/api/v9/applications/detectable.</small>
     </div>
     <div class="field">
-      <label for="modal-appid">Discord App ID <span style="font-weight:400;color:var(--text-muted)">(optional)</span></label>
-      <input id="modal-appid" type="text" placeholder="Leave blank to use no icon" />
-      <small style="display:block;margin-top:4px;font-size:11px;color:var(--text-muted)">Controls the rich presence icon. Leave blank to show no icon.</small>
+      <label for="modal-appid">Discord App ID <span class="label-optional">(optional)</span></label>
+      <input id="modal-appid" type="text" placeholder="Leave blank to use no icon" aria-describedby="modal-appid-hint" />
+      <small id="modal-appid-hint" class="field-hint">Controls the rich presence icon. Leave blank to show no icon.</small>
     </div>
     <div class="modal-actions">
       <button class="btn btn-ghost"   id="modal-cancel">Cancel</button>
@@ -869,12 +871,8 @@
     nameEl.className = 'game-name';
     nameEl.textContent = game.name;
 
-    const info = document.createElement('div');
-    info.className = 'game-info';
-    info.appendChild(nameEl);
-
     el.appendChild(makeSmallIcon(game));
-    el.appendChild(info);
+    el.appendChild(nameEl);
     el.addEventListener('click', () => selectGame(game));
     el.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); selectGame(game); }
@@ -1276,6 +1274,18 @@
 
   // ── Search ────────────────────────────────────────────
   document.getElementById('search').addEventListener('input', () => renderSections());
+
+  document.getElementById('search').addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      const first = document.querySelector('#game-list .game-item');
+      if (first) first.focus();
+    } else if (e.key === 'Enter') {
+      e.preventDefault();
+      const first = document.querySelector('#game-list .game-item');
+      if (first) { const id = first.dataset.id; const g = vsGames.find(x => x.id === id) || allGames.find(x => x.id === id); if (g) selectGame(g); }
+    }
+  });
 
   // ── Custom game modal ─────────────────────────────────
   let _modalTrigger = null;
