@@ -61,6 +61,32 @@ Click **+ Add Custom Game** at the bottom of the sidebar. Provide the game name 
 
 ---
 
+## Companion App
+
+Control your Discord activity from your phone over local Wi-Fi.
+
+### Setup
+
+1. Make sure your phone and PC are on the same Wi-Fi network
+2. Find your PC's local IP address: open Command Prompt and run `ipconfig`, then look for **IPv4 Address** under your Wi-Fi adapter (e.g. `192.168.1.42`)
+3. Open `companion/index.html` from this repo in your phone's browser, or serve it with any static file server:
+   ```bash
+   npx serve companion
+   ```
+4. Enter your PC IP in the companion app and tap **Connect**
+
+PresencePal listens on two ports when running:
+- **HTTP — port 41235**: `GET /play?game=...`, `GET /stop`, `GET /status`
+- **UDP — port 41234**: JSON packets `{ "action": "play", "game": "..." }` or `{ "action": "stop" }`
+
+### Usage
+
+- Tap any game card to set it as your Discord activity
+- A **Stop Activity** bar appears at the bottom while a game is active
+- The gear icon in the top-right lets you switch to a different PC IP
+
+---
+
 ## Contributing
 
 ```bash
