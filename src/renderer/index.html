@@ -8,18 +8,18 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg:         #1e1f22;
-      --bg2:        #2b2d31;
-      --bg3:        #313338;
-      --border:     #3d3f45;
-      --text:       #dbdee1;
-      --text-muted: #949ba4;
-      --accent:     #5865f2;
-      --accent-h:   #4752c4;
-      --green:      #23a55a;
-      --green-h:    #1a8a47;
-      --red:        #ed4245;
-      --red-h:      #c93b3e;
+      --bg:         #0d0d0f;
+      --bg2:        #161618;
+      --bg3:        #1e1e21;
+      --border:     #2a2a2e;
+      --text:       #e8e9ea;
+      --text-muted: #6b6c70;
+      --accent:     #00c2ff;
+      --accent-h:   #00a8dd;
+      --green:      #00e676;
+      --green-h:    #00c960;
+      --red:        #ff4458;
+      --red-h:      #e03a4c;
       --yellow:     #f0b429;
       --radius:     8px;
     }
@@ -27,7 +27,7 @@
     html, body { height: 100%; overflow: hidden; }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
       background: var(--bg);
       color: var(--text);
       font-size: 14px;
@@ -43,21 +43,18 @@
       align-items: center;
       justify-content: space-between;
       height: 38px;
-      padding: 0 12px;
-      background: var(--bg);
+      padding: 0 14px;
+      background: var(--bg2);
       border-bottom: 1px solid var(--border);
       -webkit-app-region: drag;
       flex-shrink: 0;
     }
-    #titlebar .brand {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-weight: 700;
+    .brand .name {
       font-size: 13px;
+      font-weight: 700;
       letter-spacing: 0.3px;
     }
-    #titlebar .brand .name span { color: var(--accent); }
+    .brand .name span { color: var(--accent); }
     #titlebar-controls {
       display: flex;
       gap: 6px;
@@ -82,134 +79,160 @@
 
     /* ── Sidebar ───────────────────────────────────────── */
     #sidebar {
-      width: 270px;
-      min-width: 270px;
+      width: 260px;
+      min-width: 260px;
       background: var(--bg2);
       border-right: 1px solid var(--border);
       display: flex;
       flex-direction: column;
       overflow: hidden;
     }
+
     #sidebar-header {
-      padding: 12px 12px 8px;
+      padding: 10px 10px 8px;
       border-bottom: 1px solid var(--border);
       flex-shrink: 0;
     }
-    #search-wrap { position: relative; }
     #search {
       width: 100%;
       padding: 7px 10px;
       background: var(--bg3);
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      color: var(--text); font-size: 13px; outline: none;
+      color: var(--text);
+      font-size: 13px;
+      outline: none;
       transition: border-color 0.15s;
     }
     #search:focus { border-color: var(--accent); }
     #search::placeholder { color: var(--text-muted); }
 
-    #game-count {
-      font-size: 11px;
-      color: var(--text-muted);
-      margin-top: 7px;
-      text-align: right;
-    }
-
-    #game-list {
+    #sidebar-body {
       flex: 1;
       overflow-y: auto;
-      padding: 6px 0;
+      padding-bottom: 6px;
     }
-    #game-list::-webkit-scrollbar { width: 4px; }
-    #game-list::-webkit-scrollbar-track { background: transparent; }
-    #game-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+    #sidebar-body::-webkit-scrollbar { width: 3px; }
+    #sidebar-body::-webkit-scrollbar-track { background: transparent; }
+    #sidebar-body::-webkit-scrollbar-thumb { background: #2a2a2e; border-radius: 3px; }
 
-    /* Loading spinner */
+    .sidebar-section { padding-bottom: 4px; }
+
+    .section-label {
+      padding: 10px 12px 4px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    /* spinner */
     #loading-state {
       display: flex;
-      flex-direction: column;
       align-items: center;
-      justify-content: center;
-      padding: 40px 20px;
-      gap: 12px;
+      gap: 10px;
+      padding: 12px 12px;
       color: var(--text-muted);
       font-size: 12px;
     }
     .spinner {
-      width: 24px; height: 24px;
-      border: 3px solid var(--border);
+      width: 16px; height: 16px;
+      border: 2px solid var(--border);
       border-top-color: var(--accent);
       border-radius: 50%;
-      animation: spin 0.8s linear infinite;
+      animation: spin 0.7s linear infinite;
+      flex-shrink: 0;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
     #no-results {
       display: none;
-      padding: 20px;
-      text-align: center;
-      color: var(--text-muted);
+      padding: 14px 12px;
       font-size: 12px;
+      color: var(--text-muted);
     }
 
+    #more-results {
+      padding: 6px 12px;
+      font-size: 11px;
+      color: var(--text-muted);
+      display: none;
+    }
+
+    /* Game list items */
     .game-item {
       display: flex;
       align-items: center;
-      gap: 10px;
-      padding: 7px 12px;
+      gap: 9px;
+      padding: 5px 10px;
       cursor: pointer;
       border-radius: 6px;
       margin: 1px 6px;
       transition: background 0.1s;
+      position: relative;
     }
     .game-item:hover  { background: var(--bg3); }
-    .game-item.active { background: var(--accent); }
-    .game-item.active .game-name { color: #fff; }
-    .game-item.active .game-exe  { color: rgba(255,255,255,0.65); }
-    .game-item.running::before {
+    .game-item.active { background: rgba(0,194,255,0.12); }
+    .game-item.active .game-name { color: var(--accent); }
+    .game-item.running::after {
       content: '';
       position: absolute;
-      right: 18px;
-      width: 7px; height: 7px;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 6px; height: 6px;
       border-radius: 50%;
       background: var(--green);
+      box-shadow: 0 0 6px var(--green);
     }
-    .game-item { position: relative; }
 
-    .game-icon-wrap {
-      width: 32px; height: 32px;
-      flex-shrink: 0;
+    /* 28px sidebar icon */
+    .game-icon-sm {
+      width: 28px; height: 28px;
       border-radius: 6px;
+      flex-shrink: 0;
       overflow: hidden;
       background: var(--bg3);
+      border: 1px solid var(--border);
       display: flex; align-items: center; justify-content: center;
-      font-size: 18px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-muted);
     }
-    .game-icon-wrap img {
-      width: 32px; height: 32px;
+    .game-icon-sm img {
+      width: 28px; height: 28px;
       object-fit: cover;
-      border-radius: 6px;
       display: block;
     }
-    .game-info  { flex: 1; min-width: 0; }
-    .game-name  { font-size: 13px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .game-exe   { font-size: 10px; color: var(--text-muted); margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-    #more-results {
-      padding: 8px 14px;
-      font-size: 11px;
+    .game-info { flex: 1; min-width: 0; }
+    .game-name {
+      font-size: 13px;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      color: var(--text);
+    }
+    .game-exe {
+      font-size: 10px;
       color: var(--text-muted);
-      text-align: center;
-      display: none;
+      margin-top: 1px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
+    /* Sidebar footer */
     #sidebar-footer {
       border-top: 1px solid var(--border);
       padding: 8px 10px;
       flex-shrink: 0;
     }
     #add-custom-btn {
-      padding: 8px;
+      padding: 7px 10px;
+      width: 100%;
       background: transparent;
       border: 1px dashed var(--border);
       border-radius: var(--radius);
@@ -218,7 +241,6 @@
       cursor: pointer;
       transition: all 0.15s;
       text-align: center;
-      width: 100%;
     }
     #add-custom-btn:hover { border-color: var(--accent); color: var(--accent); }
 
@@ -229,8 +251,13 @@
       margin-top: 5px;
     }
     #api-status.fallback { color: var(--yellow); }
+    #game-count {
+      font-size: 10px;
+      color: var(--text-muted);
+      padding: 4px 12px 0;
+    }
 
-    /* ── Main panel ─────────────────────────────────────── */
+    /* ── Main ──────────────────────────────────────────── */
     #main {
       flex: 1;
       display: flex;
@@ -246,250 +273,294 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      color: var(--text-muted);
       gap: 10px;
-      font-size: 13px;
+      background: linear-gradient(-45deg, #0d0d0f, #0a1520, #0d0d0f, #0a1a0e);
+      background-size: 400% 400%;
+      animation: bg-shift 14s ease infinite;
     }
-    #empty-state strong { color: var(--text); font-size: 15px; }
+    @keyframes bg-shift {
+      0%   { background-position: 0% 50%; }
+      50%  { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    #empty-state .app-name {
+      font-size: 26px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      color: var(--text);
+    }
+    #empty-state .app-name span { color: var(--accent); }
+    #empty-state .sub {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
 
-    /* Game view */
+    /* ── Game view ─────────────────────────────────────── */
     #game-view {
       flex: 1;
       display: none;
       flex-direction: column;
-      overflow: hidden;
+      overflow-y: auto;
     }
+    #game-view::-webkit-scrollbar { width: 3px; }
+    #game-view::-webkit-scrollbar-thumb { background: #2a2a2e; border-radius: 3px; }
 
     /* Game header */
     #game-header {
-      padding: 18px 24px 14px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 20px 24px 16px;
       border-bottom: 1px solid var(--border);
       flex-shrink: 0;
     }
-    .game-title-row {
+    .hdr-left {
       display: flex;
       align-items: center;
-      gap: 14px;
+      gap: 16px;
+      flex: 1;
+      min-width: 0;
     }
-    #hdr-icon-wrap {
-      width: 60px; height: 60px;
-      border-radius: 12px;
-      overflow: hidden;
-      background: var(--bg2);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 30px;
+
+    /* 64px header icon with glow */
+    #hdr-icon-container {
+      position: relative;
+      width: 64px;
+      height: 64px;
       flex-shrink: 0;
     }
+    #hdr-icon-glow {
+      position: absolute;
+      inset: -10px;
+      border-radius: 50%;
+      background: var(--accent);
+      filter: blur(22px);
+      opacity: 0;
+      transition: opacity 0.4s;
+      pointer-events: none;
+    }
+    #hdr-icon-glow.on { opacity: 0.22; }
+    #hdr-icon-wrap {
+      position: relative;
+      z-index: 1;
+      width: 64px; height: 64px;
+      border-radius: 12px;
+      overflow: hidden;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--text-muted);
+    }
     #hdr-icon-wrap img {
-      width: 60px; height: 60px;
+      width: 64px; height: 64px;
       object-fit: cover;
       display: block;
     }
-    #hdr-name { font-size: 20px; font-weight: 700; }
-    #hdr-exe  { font-size: 12px; color: var(--text-muted); margin-top: 3px; font-family: monospace; }
 
-    /* Status row */
-    #status-row {
+    #hdr-text { flex: 1; min-width: 0; }
+    #hdr-name {
+      font-size: 20px;
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      line-height: 1.2;
+    }
+    #hdr-exe-badge {
+      display: inline-block;
+      margin-top: 5px;
+      padding: 2px 8px;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      font-family: 'Consolas', 'Courier New', monospace;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    /* Fav button */
+    #fav-btn {
+      background: transparent;
+      border: none;
+      font-size: 20px;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 6px;
+      border-radius: 6px;
+      transition: color 0.15s, background 0.15s;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+    #fav-btn:hover { color: var(--yellow); background: rgba(240,180,41,0.08); }
+    #fav-btn.starred { color: var(--yellow); }
+
+    /* Stats row */
+    #stats-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      padding: 16px 24px;
+      flex-shrink: 0;
+    }
+    .stat-box {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 13px 16px;
+    }
+    .stat-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 7px;
+    }
+    .stat-value {
       display: flex;
       align-items: center;
       gap: 8px;
-      margin-top: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
     }
-    #status-dot {
-      width: 9px; height: 9px;
+    .stat-mono {
+      font-family: 'Consolas', 'Courier New', monospace;
+      font-size: 22px;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -0.5px;
+    }
+
+    /* Animated pulse dot */
+    .pulse-dot {
+      width: 8px; height: 8px;
       border-radius: 50%;
       background: var(--text-muted);
+      flex-shrink: 0;
       transition: background 0.3s;
+    }
+    .pulse-dot.live {
+      background: var(--green);
+      box-shadow: 0 0 6px var(--green);
+      animation: dot-live 1.6s ease-in-out infinite;
+    }
+    .pulse-dot.scanning {
+      background: var(--yellow);
+      animation: dot-scan 0.7s ease-in-out infinite;
+    }
+    @keyframes dot-live {
+      0%, 100% { box-shadow: 0 0 4px var(--green); }
+      50% { box-shadow: 0 0 14px var(--green), 0 0 22px rgba(0,230,118,0.35); }
+    }
+    @keyframes dot-scan {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.35; }
+    }
+    #stat-status-text.live     { color: var(--green); }
+    #stat-status-text.scanning { color: var(--yellow); }
+    #stat-status-text.idle     { color: var(--text-muted); }
+    #stat-elapsed.live         { color: var(--text); }
+
+    /* Exe dropdown (ambiguous games only) */
+    #exe-field {
+      display: none;
+      padding: 0 24px 4px;
       flex-shrink: 0;
     }
-    #status-dot.active   { background: var(--green); }
-    #status-dot.scanning { background: var(--yellow); animation: pulse 1s ease-in-out infinite; }
-    #status-dot.error    { background: var(--red); }
-    @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.4; } }
-
-    #status-text  { font-size: 12px; color: var(--text-muted); }
-    #status-text.active   { color: var(--green); }
-    #status-text.scanning { color: var(--yellow); }
-    #status-text.error    { color: var(--red); }
-
-    #elapsed-text {
-      margin-left: auto;
-      font-size: 12px;
-      color: var(--text-muted);
-      font-variant-numeric: tabular-nums;
-    }
-
-    /* Panel content */
-    #panel-content {
-      flex: 1;
-      overflow-y: auto;
-      padding: 18px 24px;
-      display: grid;
-      grid-template-columns: 1fr 256px;
-      gap: 20px;
-      align-items: start;
-    }
-    #panel-content::-webkit-scrollbar { width: 4px; }
-    #panel-content::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
-
-    /* Left column */
-    .field-group { display: flex; flex-direction: column; gap: 14px; }
-
-    .field label {
+    .field-label {
       display: block;
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 700;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.05em;
       text-transform: uppercase;
       color: var(--text-muted);
       margin-bottom: 5px;
     }
-    .field select {
+    #exe-select {
       width: 100%;
-      padding: 9px 12px;
-      background: var(--bg2);
+      padding: 8px 12px;
+      background: var(--bg3);
       border: 1px solid var(--border);
       border-radius: var(--radius);
       color: var(--text);
       font-size: 13px;
       outline: none;
       cursor: pointer;
-      transition: border-color 0.15s;
       appearance: none;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23949ba4' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath fill='%236b6c70' d='M5 7L0 2h10z'/%3E%3C/svg%3E");
       background-repeat: no-repeat;
       background-position: right 10px center;
-      padding-right: 30px;
+      padding-right: 28px;
+      transition: border-color 0.15s;
     }
-    .field select:focus { border-color: var(--accent); }
-    .field .hint { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+    #exe-select:focus { border-color: var(--accent); }
 
-    .btn-row { display: flex; gap: 10px; }
-    .btn {
-      padding: 10px 20px;
-      border-radius: var(--radius);
+    /* Launch area */
+    #launch-area {
+      display: flex;
+      gap: 10px;
+      padding: 4px 24px 16px;
+      flex-shrink: 0;
+    }
+    #btn-play {
+      flex: 1;
+      height: 48px;
+      background: var(--accent);
+      color: #000;
       border: none;
-      font-size: 13px;
+      border-radius: var(--radius);
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s, box-shadow 0.2s, opacity 0.15s;
+      letter-spacing: 0.02em;
+    }
+    #btn-play:hover:not(:disabled) { background: var(--accent-h); }
+    #btn-play.active {
+      background: var(--green);
+      animation: btn-pulse 2s ease-in-out infinite;
+    }
+    #btn-play.active:hover:not(:disabled) { background: var(--green-h); }
+    #btn-play:disabled { opacity: 0.45; cursor: not-allowed; animation: none; }
+    @keyframes btn-pulse {
+      0%, 100% { box-shadow: 0 0 8px rgba(0,230,118,0.3); }
+      50% { box-shadow: 0 0 22px rgba(0,230,118,0.6), 0 0 40px rgba(0,230,118,0.2); }
+    }
+    #btn-stop {
+      display: none;
+      height: 48px;
+      padding: 0 22px;
+      background: transparent;
+      border: 1px solid var(--red);
+      color: var(--red);
+      border-radius: var(--radius);
+      font-size: 14px;
       font-weight: 600;
       cursor: pointer;
-      transition: background 0.15s, opacity 0.15s;
-      display: flex; align-items: center; gap: 7px;
+      transition: background 0.15s;
+      white-space: nowrap;
       flex-shrink: 0;
     }
-    .btn:disabled { opacity: 0.4; cursor: not-allowed; }
-    .btn-primary { background: var(--accent); color: #fff; }
-    .btn-primary:not(:disabled):hover { background: var(--accent-h); }
-    .btn-danger  { background: var(--red); color: #fff; }
-    .btn-danger:not(:disabled):hover  { background: var(--red-h); }
-    .btn-ghost   { background: var(--bg2); color: var(--text); border: 1px solid var(--border); }
-    .btn-ghost:not(:disabled):hover   { background: var(--bg3); }
+    #btn-stop:hover { background: rgba(255,68,88,0.1); }
 
-    /* Info box */
-    .info-box {
-      background: var(--bg2);
-      border: 1px solid var(--border);
-      border-left: 3px solid var(--accent);
-      border-radius: var(--radius);
-      padding: 12px 14px;
-    }
-    .info-box .info-title {
-      font-size: 11px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      color: var(--accent);
-      margin-bottom: 6px;
-    }
-    .info-box .info-text {
-      font-size: 12px;
-      color: var(--text-muted);
-      line-height: 1.6;
-    }
-    .info-box code {
-      background: var(--bg3);
-      padding: 1px 5px;
-      border-radius: 4px;
-      font-size: 11px;
-      color: var(--text);
-    }
-
-    /* Right column — status panel */
-    #status-card {
-      background: var(--bg2);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 16px;
-    }
-    #status-card .card-title {
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.8px;
-      text-transform: uppercase;
-      color: var(--text-muted);
-      margin-bottom: 16px;
-    }
-    .sc-indicator {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 16px;
-    }
-    #sc-dot {
-      width: 10px; height: 10px;
-      border-radius: 50%;
-      background: var(--text-muted);
-      flex-shrink: 0;
-      transition: background 0.3s;
-    }
-    #sc-dot.active   { background: var(--green); }
-    #sc-dot.scanning { background: var(--yellow); animation: pulse 1s ease-in-out infinite; }
-    #sc-label {
-      font-size: 13px;
-      color: var(--text-muted);
-    }
-    #sc-label.active   { color: var(--green); font-weight: 600; }
-    #sc-label.scanning { color: var(--yellow); }
-    #sc-game-section { display: none; }
-    #sc-online-notice {
+    /* Online notice */
+    #online-notice {
       display: none;
-      margin-top: 14px;
-      padding-top: 10px;
-      border-top: 1px solid var(--border);
+      padding: 0 24px 20px;
       font-size: 11px;
       color: var(--text-muted);
       line-height: 1.5;
     }
-    #sc-online-notice strong { color: var(--text); }
-    #sc-game-name {
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--text);
-      margin-bottom: 10px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    #sc-elapsed-label {
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 0.5px;
-      text-transform: uppercase;
-      color: var(--text-muted);
-      margin-bottom: 4px;
-    }
-    #sc-elapsed {
-      font-size: 34px;
-      font-weight: 700;
-      font-variant-numeric: tabular-nums;
-      color: var(--text);
-      letter-spacing: -1px;
-    }
+    #online-notice strong { color: var(--text); }
 
     /* ── Modal ─────────────────────────────────────────── */
     #modal-backdrop {
       display: none;
       position: fixed; inset: 0;
-      background: rgba(0,0,0,0.6);
+      background: rgba(0,0,0,0.65);
       z-index: 100;
       align-items: center; justify-content: center;
     }
@@ -502,7 +573,16 @@
       padding: 24px;
       display: flex; flex-direction: column; gap: 14px;
     }
-    #modal h2 { font-size: 18px; font-weight: 700; }
+    #modal h2 { font-size: 17px; font-weight: 700; }
+    #modal .field label {
+      display: block;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 5px;
+    }
     #modal .field input {
       width: 100%;
       padding: 9px 12px;
@@ -514,11 +594,26 @@
     }
     #modal .field input:focus { border-color: var(--accent); }
     #modal .field input::placeholder { color: var(--text-muted); }
-    #modal .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 4px; }
+    #modal .modal-actions {
+      display: flex; gap: 10px; justify-content: flex-end; margin-top: 4px;
+    }
+    .btn {
+      padding: 9px 18px;
+      border-radius: var(--radius);
+      border: none;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .btn-primary { background: var(--accent); color: #000; }
+    .btn-primary:hover { background: var(--accent-h); }
+    .btn-ghost   { background: var(--bg3); color: var(--text); border: 1px solid var(--border); }
+    .btn-ghost:hover { background: var(--border); }
 
     /* ── Toast ─────────────────────────────────────────── */
     #toast-container {
-      position: fixed; bottom: 20px; right: 20px;
+      position: fixed; bottom: 18px; right: 18px;
       display: flex; flex-direction: column; gap: 8px;
       z-index: 200; pointer-events: none;
     }
@@ -527,51 +622,63 @@
       border-radius: var(--radius);
       font-size: 13px; font-weight: 500;
       color: #fff;
-      opacity: 0; transform: translateY(12px);
-      transition: opacity 0.25s, transform 0.25s;
+      opacity: 0; transform: translateY(10px);
+      transition: opacity 0.22s, transform 0.22s;
       pointer-events: none; max-width: 300px;
     }
     .toast.show { opacity: 1; transform: translateY(0); }
-    .toast.success { background: var(--green); }
-    .toast.error   { background: var(--red); }
-    .toast.info    { background: var(--accent); }
-    .toast.warn    { background: var(--yellow); color: #000; }
+    .toast.success { background: #1a4a2e; border: 1px solid var(--green); color: var(--green); }
+    .toast.error   { background: #3a1a1e; border: 1px solid var(--red); color: var(--red); }
+    .toast.info    { background: var(--bg3); border: 1px solid var(--border); color: var(--text); }
+    .toast.warn    { background: #3a2e0a; border: 1px solid var(--yellow); color: var(--yellow); }
   </style>
 </head>
 <body>
 
-<!-- Titlebar -->
 <div id="titlebar">
   <div class="brand">
     <span class="name">Presence<span>Pal</span></span>
   </div>
   <div id="titlebar-controls">
-    <button class="tb-btn minimize" onclick="window.presencepal.minimize()" title="Minimize">&#8722;</button>
-    <button class="tb-btn close"    onclick="window.presencepal.close()"    title="Close">&#10005;</button>
+    <button class="tb-btn minimize" onclick="window.presencepal.minimize()">&#8722;</button>
+    <button class="tb-btn close"    onclick="window.presencepal.close()">&#10005;</button>
   </div>
 </div>
 
-<!-- App -->
 <div id="app">
 
-  <!-- Sidebar -->
   <aside id="sidebar">
     <div id="sidebar-header">
-      <div id="search-wrap">
-        <input id="search" type="text" placeholder="Search games..." autocomplete="off" />
-      </div>
-      <div id="game-count"></div>
+      <input id="search" type="text" placeholder="Search games..." autocomplete="off" />
     </div>
 
-    <div id="game-list">
-      <div id="loading-state">
-        <div class="spinner"></div>
-        <span>Loading games from Discord…</span>
+    <div id="sidebar-body">
+      <!-- Favorites -->
+      <div id="fav-section" class="sidebar-section" style="display:none">
+        <div class="section-label">Favorites</div>
+        <div id="fav-list"></div>
       </div>
-      <div id="no-results">No games found</div>
-    </div>
 
-    <div id="more-results"></div>
+      <!-- Recent -->
+      <div id="recent-section" class="sidebar-section" style="display:none">
+        <div class="section-label">Recent</div>
+        <div id="recent-list"></div>
+      </div>
+
+      <!-- All / Results -->
+      <div id="all-section" class="sidebar-section">
+        <div class="section-label" id="all-label">All Games</div>
+        <div id="game-count"></div>
+        <div id="game-list">
+          <div id="loading-state">
+            <div class="spinner"></div>
+            <span>Loading games...</span>
+          </div>
+          <div id="no-results">No games found</div>
+        </div>
+        <div id="more-results"></div>
+      </div>
+    </div>
 
     <div id="sidebar-footer">
       <button id="add-custom-btn">+ Add Custom Game</button>
@@ -579,90 +686,72 @@
     </div>
   </aside>
 
-  <!-- Main -->
   <main id="main">
     <div id="empty-state">
-      <strong>Select a game to get started</strong>
-      <span>PresencePal runs a background process Discord detects as the real game</span>
+      <div class="app-name">Presence<span>Pal</span></div>
+      <div class="sub">Search a game to get started</div>
     </div>
 
     <div id="game-view">
       <div id="game-header">
-        <div class="game-title-row">
-          <div id="hdr-icon-wrap"></div>
-          <div>
+        <div class="hdr-left">
+          <div id="hdr-icon-container">
+            <div id="hdr-icon-glow"></div>
+            <div id="hdr-icon-wrap"></div>
+          </div>
+          <div id="hdr-text">
             <div id="hdr-name">Game</div>
-            <div id="hdr-exe">—</div>
+            <div id="hdr-exe-badge">game.exe</div>
           </div>
         </div>
-        <div id="status-row">
-          <div id="status-dot"></div>
-          <span id="status-text">Not active</span>
-          <span id="elapsed-text"></span>
+        <button id="fav-btn" title="Add to favorites">&#9734;</button>
+      </div>
+
+      <div id="stats-row">
+        <div class="stat-box">
+          <div class="stat-label">Status</div>
+          <div class="stat-value">
+            <span class="pulse-dot" id="stat-dot"></span>
+            <span id="stat-status-text" class="idle">Idle</span>
+          </div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-label">Elapsed</div>
+          <div class="stat-value stat-mono" id="stat-elapsed">--:--</div>
         </div>
       </div>
 
-      <div id="panel-content">
-        <!-- Left: controls -->
-        <div class="field-group">
-          <div class="field">
-            <label>Executable to launch</label>
-            <select id="exe-select"></select>
-            <span class="hint">Discord detects this process name as the real game</span>
-          </div>
+      <div id="exe-field">
+        <span class="field-label">Executable</span>
+        <select id="exe-select"></select>
+      </div>
 
-          <div class="btn-row">
-            <button id="btn-play" class="btn btn-primary">▶ Launch</button>
-            <button id="btn-stop" class="btn btn-danger" disabled>■ Stop</button>
-          </div>
+      <div id="launch-area">
+        <button id="btn-play">Launch</button>
+        <button id="btn-stop">Stop</button>
+      </div>
 
-          <div class="info-box">
-            <div class="info-title">How it works</div>
-            <div class="info-text">
-              PresencePal copies a small background executable, renames it to
-              <code id="info-exe-name">game.exe</code>, and launches it from the expected
-              folder path. Discord's process scanner detects it by name and shows it
-              as your active game automatically.
-            </div>
-          </div>
-        </div>
-
-        <!-- Right: status panel -->
-        <div id="status-card">
-          <div class="card-title">Status</div>
-          <div class="sc-indicator">
-            <div id="sc-dot"></div>
-            <span id="sc-label">Not running</span>
-          </div>
-          <div id="sc-game-section">
-            <div id="sc-game-name"></div>
-            <div id="sc-elapsed-label">Elapsed</div>
-            <div id="sc-elapsed">0:00</div>
-          </div>
-          <div id="sc-online-notice">
-            Set Discord status to <strong>Online</strong> to show activity to friends.
-          </div>
-        </div>
+      <div id="online-notice">
+        Set Discord to <strong>Online</strong> to show activity to friends
       </div>
     </div>
   </main>
 </div>
 
-<!-- Add Custom Game Modal -->
 <div id="modal-backdrop">
   <div id="modal">
     <h2>Add Custom Game</h2>
     <div class="field">
       <label>Game Name</label>
-      <input id="modal-name"    type="text" placeholder="e.g. My Game" />
+      <input id="modal-name" type="text" placeholder="e.g. My Game" />
     </div>
     <div class="field">
-      <label>Executable Name (e.g. MyGame.exe)</label>
-      <input id="modal-exe"     type="text" placeholder="game.exe" />
+      <label>Executable Name</label>
+      <input id="modal-exe" type="text" placeholder="game.exe" />
     </div>
     <div class="field">
-      <label>Discord App ID</label>
-      <input id="modal-appid"   type="text" placeholder="Leave blank to use a random ID" />
+      <label>Discord App ID (optional)</label>
+      <input id="modal-appid" type="text" placeholder="Leave blank for random" />
     </div>
     <div class="modal-actions">
       <button class="btn btn-ghost"   id="modal-cancel">Cancel</button>
@@ -671,28 +760,52 @@
   </div>
 </div>
 
-<!-- Toasts -->
 <div id="toast-container"></div>
 
-<!-- Fallback game list -->
 <script src="games.js"></script>
-
 <script>
   const api = window.presencepal;
 
   // ── State ────────────────────────────────────────────
   let allGames        = [];
   let selectedGame    = null;
+  let selectedExeEntry = null;   // { name, is_launcher, ... }
   let scanInterval    = null;
   let elapsedInterval = null;
   let elapsedSeconds  = 0;
-  let activeExeName   = null; // exact process name used to launch (for stop)
+  let activeExeName   = null;
+  const runningSet    = new Set();
   const DISPLAY_LIMIT = 150;
-  const runningSet    = new Set(); // appIds currently running
 
-  // Extract the filename portion from a path-like exe name
+  let favorites    = new Set(JSON.parse(localStorage.getItem('pp_favorites') || '[]'));
+  let recentGames  = JSON.parse(localStorage.getItem('pp_recent') || '[]');
+
+  // ── Helpers ───────────────────────────────────────────
   function exeBasename(name) {
     return name.replace(/\\/g, '/').split('/').pop();
+  }
+
+  const BAD_EXE = /launcher|crash|helper|redist|uninstall/i;
+
+  function pickBestExe(winExes) {
+    if (!winExes || winExes.length === 0) return null;
+    const good = winExes.filter(e => !BAD_EXE.test(exeBasename(e.name)) && !e.is_launcher);
+    const pool = good.length > 0 ? good : winExes.filter(e => !e.is_launcher);
+    const candidates = pool.length > 0 ? pool : winExes;
+    return candidates.reduce((a, b) =>
+      exeBasename(a.name).length <= exeBasename(b.name).length ? a : b
+    );
+  }
+
+  function needsDropdown(winExes) {
+    if (!winExes || winExes.length <= 1) return false;
+    const good = winExes.filter(e => !BAD_EXE.test(exeBasename(e.name)) && !e.is_launcher);
+    return good.length >= 2;
+  }
+
+  function iconUrl(id, hash, size = 32) {
+    if (!hash) return null;
+    return `https://cdn.discordapp.com/app-icons/${id}/${hash}.png?size=${size}`;
   }
 
   // ── Toast ─────────────────────────────────────────────
@@ -704,31 +817,8 @@
     requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add('show')));
     setTimeout(() => {
       el.classList.remove('show');
-      setTimeout(() => el.remove(), 300);
+      setTimeout(() => el.remove(), 250);
     }, duration);
-  }
-
-  // ── Icon helpers ──────────────────────────────────────
-  function iconUrl(id, hash) {
-    if (!hash) return null;
-    return `https://cdn.discordapp.com/app-icons/${id}/${hash}.png?size=64`;
-  }
-
-  function makeIconEl(id, hash, fallback = '', size = 32) {
-    const wrap = document.createElement('div');
-    wrap.className = 'game-icon-wrap';
-    wrap.style.cssText = `width:${size}px;height:${size}px;font-size:${Math.round(size*0.55)}px`;
-
-    if (hash) {
-      const img = document.createElement('img');
-      img.src = iconUrl(id, hash);
-      img.width = size; img.height = size;
-      img.onerror = () => { img.remove(); wrap.textContent = fallback; };
-      wrap.appendChild(img);
-    } else {
-      wrap.textContent = fallback;
-    }
-    return wrap;
   }
 
   // ── Normalize games ───────────────────────────────────
@@ -751,65 +841,180 @@
       id:         g.id,
       name:       g.name,
       icon:       null,
-      emoji:      '',
       winExes:    g.exeName ? [{ name: g.exeName, is_launcher: false }] : [],
       primaryExe: g.exeName ? { name: g.exeName } : null,
       source:     'fallback',
     };
   }
 
+  // ── Make sidebar icon (28px) ──────────────────────────
+  function makeSmallIcon(game) {
+    const wrap = document.createElement('div');
+    wrap.className = 'game-icon-sm';
+    const url = iconUrl(game.id, game.icon, 32);
+    if (url) {
+      const img = document.createElement('img');
+      img.src = url;
+      img.width = 28; img.height = 28;
+      img.alt = '';
+      img.onerror = () => { img.remove(); wrap.textContent = (game.name || '?')[0].toUpperCase(); };
+      wrap.appendChild(img);
+    } else {
+      wrap.textContent = (game.name || '?')[0].toUpperCase();
+    }
+    return wrap;
+  }
+
+  // ── Make game list item ───────────────────────────────
+  function makeGameItem(game) {
+    const el = document.createElement('div');
+    el.className = 'game-item'
+      + (selectedGame?.id === game.id ? ' active'  : '')
+      + (runningSet.has(game.id)      ? ' running' : '');
+    el.dataset.id = game.id;
+
+    const nameEl = document.createElement('div');
+    nameEl.className = 'game-name';
+    nameEl.textContent = game.name;
+
+    const info = document.createElement('div');
+    info.className = 'game-info';
+    info.appendChild(nameEl);
+
+    el.appendChild(makeSmallIcon(game));
+    el.appendChild(info);
+    el.addEventListener('click', () => selectGame(game));
+    return el;
+  }
+
+  // ── Recent helpers ────────────────────────────────────
+  function addToRecent(game) {
+    const entry = {
+      id:         game.id,
+      name:       game.name,
+      icon:       game.icon || null,
+      winExes:    game.winExes || [],
+      primaryExe: game.primaryExe || null,
+      source:     game.source || 'recent',
+    };
+    recentGames = recentGames.filter(g => g.id !== game.id);
+    recentGames.unshift(entry);
+    if (recentGames.length > 6) recentGames = recentGames.slice(0, 6);
+    localStorage.setItem('pp_recent', JSON.stringify(recentGames));
+  }
+
+  function getGameById(id) {
+    return allGames.find(g => g.id === id)
+      || recentGames.find(g => g.id === id)
+      || null;
+  }
+
+  // ── Favorites helpers ─────────────────────────────────
+  function toggleFavorite(gameId) {
+    if (favorites.has(gameId)) {
+      favorites.delete(gameId);
+    } else {
+      favorites.add(gameId);
+    }
+    localStorage.setItem('pp_favorites', JSON.stringify([...favorites]));
+    updateFavBtn();
+    renderSections();
+  }
+
+  function updateFavBtn() {
+    const btn = document.getElementById('fav-btn');
+    if (!btn || !selectedGame) return;
+    const starred = favorites.has(selectedGame.id);
+    btn.innerHTML = starred ? '&#9733;' : '&#9734;';
+    btn.classList.toggle('starred', starred);
+    btn.title = starred ? 'Remove from favorites' : 'Add to favorites';
+  }
+
   // ── Load games ────────────────────────────────────────
   async function loadGames() {
-    const loadingEl  = document.getElementById('loading-state');
-    const apiStatus  = document.getElementById('api-status');
-    const noResults  = document.getElementById('no-results');
-    noResults.style.display = 'none';
+    const apiStatus = document.getElementById('api-status');
 
     const res = await api.fetchGames();
 
     if (res.success && Array.isArray(res.games) && res.games.length > 0) {
       allGames = res.games
         .map(normalizeApiGame)
-        .filter(g => g.winExes.length > 0) // only games Discord can detect on Windows
+        .filter(g => g.winExes.length > 0)
         .sort((a, b) => a.name.localeCompare(b.name));
-
-      apiStatus.textContent = `${allGames.length.toLocaleString()} verified Discord games`;
-      apiStatus.className   = '';
+      apiStatus.textContent = `${allGames.length.toLocaleString()} games`;
+      apiStatus.className = '';
     } else {
-      // Fall back to hardcoded games.js list
       allGames = (typeof GAMES !== 'undefined' ? GAMES : []).map(normalizeFallbackGame);
-      apiStatus.textContent = 'Offline — showing built-in list';
-      apiStatus.className   = 'fallback';
+      apiStatus.textContent = 'Offline — built-in list';
+      apiStatus.className = 'fallback';
       if (!res.success) toast(`Could not reach Discord API: ${res.error}`, 'warn', 5000);
     }
 
-    loadingEl.style.display = 'none';
-    renderList();
+    document.getElementById('loading-state').style.display = 'none';
+    renderSections();
   }
 
-  // ── Render list ───────────────────────────────────────
-  function getFilteredGames() {
+  // ── Render sidebar sections ───────────────────────────
+  function renderSections() {
     const q = document.getElementById('search').value.trim().toLowerCase();
-    if (!q) return allGames;
-    return allGames.filter(g => g.name.toLowerCase().includes(q));
+    const isSearching = q.length > 0;
+
+    // Favorites section: hide when searching
+    const favSection   = document.getElementById('fav-section');
+    const recentSection = document.getElementById('recent-section');
+
+    if (isSearching) {
+      favSection.style.display   = 'none';
+      recentSection.style.display = 'none';
+    } else {
+      renderPinnedSection(
+        favSection,
+        document.getElementById('fav-list'),
+        allGames.filter(g => favorites.has(g.id))
+          .concat(recentGames.filter(g => favorites.has(g.id) && !allGames.find(a => a.id === g.id)))
+      );
+      renderPinnedSection(
+        recentSection,
+        document.getElementById('recent-list'),
+        recentGames.filter(g => !favorites.has(g.id))
+      );
+    }
+
+    // All / Results section
+    document.getElementById('all-label').textContent = isSearching ? 'Results' : 'All Games';
+    renderMainList(q);
   }
 
-  function renderList() {
+  function renderPinnedSection(sectionEl, listEl, games) {
+    listEl.innerHTML = '';
+    if (games.length === 0) {
+      sectionEl.style.display = 'none';
+      return;
+    }
+    sectionEl.style.display = 'block';
+    games.forEach(g => {
+      // Prefer fresh data from allGames
+      const game = allGames.find(a => a.id === g.id) || g;
+      listEl.appendChild(makeGameItem(game));
+    });
+  }
+
+  function renderMainList(q) {
     const list      = document.getElementById('game-list');
     const noResults = document.getElementById('no-results');
     const moreEl    = document.getElementById('more-results');
     const countEl   = document.getElementById('game-count');
 
-    // Remove existing game items only
     list.querySelectorAll('.game-item').forEach(el => el.remove());
     noResults.style.display = 'none';
     moreEl.style.display    = 'none';
 
-    const filtered = getFilteredGames();
-    const shown    = filtered.slice(0, DISPLAY_LIMIT);
+    const filtered = q
+      ? allGames.filter(g => g.name.toLowerCase().includes(q))
+      : allGames;
 
-    countEl.textContent = filtered.length
-      ? `${filtered.length.toLocaleString()} game${filtered.length === 1 ? '' : 's'}`
+    countEl.textContent = (!q && filtered.length)
+      ? `${filtered.length.toLocaleString()} games`
       : '';
 
     if (filtered.length === 0) {
@@ -818,134 +1023,137 @@
       return;
     }
 
+    const shown = filtered.slice(0, DISPLAY_LIMIT);
     shown.forEach(game => list.appendChild(makeGameItem(game)));
 
     if (filtered.length > DISPLAY_LIMIT) {
       moreEl.style.display = 'block';
-      moreEl.textContent   = `Showing ${DISPLAY_LIMIT} of ${filtered.length.toLocaleString()} — refine search to narrow down`;
+      moreEl.textContent   = `Showing ${DISPLAY_LIMIT} of ${filtered.length.toLocaleString()} — refine search`;
     }
-  }
-
-  function makeGameItem(game) {
-    const el = document.createElement('div');
-    el.className = 'game-item' +
-      (selectedGame?.id === game.id ? ' active'   : '') +
-      (runningSet.has(game.id)      ? ' running'  : '');
-    el.dataset.id = game.id;
-
-    const iconWrap = makeIconEl(game.id, game.icon, '', 32);
-
-    const info = document.createElement('div');
-    info.className = 'game-info';
-
-    const nameEl = document.createElement('div');
-    nameEl.className = 'game-name';
-    nameEl.textContent = game.name;
-
-    const exeEl = document.createElement('div');
-    exeEl.className = 'game-exe';
-    exeEl.textContent = game.primaryExe ? exeBasename(game.primaryExe.name) : (game.source === 'fallback' ? 'No exe info' : '');
-
-    info.appendChild(nameEl);
-    info.appendChild(exeEl);
-    el.appendChild(iconWrap);
-    el.appendChild(info);
-    el.addEventListener('click', () => selectGame(game));
-    return el;
   }
 
   // ── Select game ───────────────────────────────────────
   function selectGame(game) {
     selectedGame = game;
 
-    document.getElementById('empty-state').style.display  = 'none';
-    document.getElementById('game-view').style.display    = 'flex';
-
-    // Header
-    const hdrWrap = document.getElementById('hdr-icon-wrap');
-    hdrWrap.innerHTML = '';
-    const iconEl = makeIconEl(game.id, game.icon, '', 60);
-    iconEl.style.cssText = 'width:60px;height:60px;border-radius:12px;font-size:30px;background:var(--bg2);display:flex;align-items:center;justify-content:center;';
-    // Reuse the inner content
-    hdrWrap.style.cssText = '';
-    if (game.icon) {
+    // Header icon
+    const wrap = document.getElementById('hdr-icon-wrap');
+    const glow = document.getElementById('hdr-icon-glow');
+    wrap.innerHTML = '';
+    const url = iconUrl(game.id, game.icon, 128);
+    if (url) {
       const img = document.createElement('img');
-      img.src = iconUrl(game.id, game.icon);
-      img.width = 60; img.height = 60;
-      img.style.cssText = 'width:60px;height:60px;object-fit:cover;border-radius:12px;display:block;';
-      img.onerror = () => { img.remove(); };
-      hdrWrap.appendChild(img);
+      img.src = url;
+      img.width = 64; img.height = 64;
+      img.style.cssText = 'width:64px;height:64px;object-fit:cover;display:block;';
+      img.onerror = () => { img.remove(); wrap.textContent = (game.name || '?')[0].toUpperCase(); glow.classList.remove('on'); };
+      wrap.appendChild(img);
+      glow.classList.add('on');
     } else {
-      hdrWrap.textContent = '';
+      wrap.textContent = (game.name || '?')[0].toUpperCase();
+      glow.classList.remove('on');
     }
 
     document.getElementById('hdr-name').textContent = game.name;
 
-    // Populate exe select — value = index, label = short detection name
+    // Auto-select exe
+    selectedExeEntry = pickBestExe(game.winExes);
+    const exeName = selectedExeEntry ? exeBasename(selectedExeEntry.name) : 'unknown.exe';
+    document.getElementById('hdr-exe-badge').textContent = exeName;
+
+    // Dropdown only for ambiguous games
+    const exeField = document.getElementById('exe-field');
     const sel = document.getElementById('exe-select');
-    sel.innerHTML = '';
-    if (game.winExes.length > 0) {
+    if (needsDropdown(game.winExes)) {
+      sel.innerHTML = '';
       game.winExes.forEach((exe, i) => {
         const opt = document.createElement('option');
-        opt.value       = i;
+        opt.value = i;
         opt.textContent = exeBasename(exe.name) + (exe.is_launcher ? ' (launcher)' : '');
         sel.appendChild(opt);
       });
-      const firstName = exeBasename(game.winExes[0].name);
-      document.getElementById('hdr-exe').textContent        = firstName;
-      document.getElementById('info-exe-name').textContent  = firstName;
-      document.getElementById('btn-play').disabled          = false;
+      // Pre-select the best one
+      const bestIdx = game.winExes.indexOf(selectedExeEntry);
+      if (bestIdx >= 0) sel.value = bestIdx;
+      sel.onchange = () => {
+        selectedExeEntry = game.winExes[parseInt(sel.value, 10)];
+        document.getElementById('hdr-exe-badge').textContent = exeBasename(selectedExeEntry.name);
+      };
+      exeField.style.display = 'block';
     } else {
-      const opt = document.createElement('option');
-      opt.textContent = 'No Windows executable available';
-      sel.appendChild(opt);
-      document.getElementById('hdr-exe').textContent       = 'No executable info';
-      document.getElementById('info-exe-name').textContent = 'unknown.exe';
-      document.getElementById('btn-play').disabled         = true;
+      exeField.style.display = 'none';
     }
 
-    sel.onchange = () => {
-      const exe  = game.winExes[parseInt(sel.value, 10)];
-      const name = exe ? exeBasename(exe.name) : '';
-      document.getElementById('hdr-exe').textContent       = name;
-      document.getElementById('info-exe-name').textContent = name;
-    };
+    // Fav button
+    updateFavBtn();
 
-    // Status reflects whether THIS game is already running
+    // Play button state
+    const canPlay = !!selectedExeEntry;
+    document.getElementById('btn-play').disabled = !canPlay;
+
+    // Status: reflect if already running
     if (runningSet.has(game.id)) {
-      setStatus('active', 'Running');
+      setLive();
     } else {
-      setStatus('', 'Not active');
-      document.getElementById('btn-stop').disabled = true;
+      setIdle();
     }
 
-    renderList(); // refresh active state in sidebar
+    document.getElementById('empty-state').style.display = 'none';
+    document.getElementById('game-view').style.display   = 'flex';
+
+    renderSections(); // refresh active state in sidebar
   }
 
   // ── Status helpers ────────────────────────────────────
-  function setStatus(type, text) {
-    const dot  = document.getElementById('status-dot');
-    const span = document.getElementById('status-text');
-    dot.className   = type;
-    span.className  = type;
-    span.textContent = text;
+  function setIdle() {
+    const dot  = document.getElementById('stat-dot');
+    const text = document.getElementById('stat-status-text');
+    dot.className   = 'pulse-dot';
+    text.className  = 'idle';
+    text.textContent = 'Idle';
+    document.getElementById('stat-elapsed').textContent = '--:--';
+    document.getElementById('btn-play').classList.remove('active');
+    document.getElementById('btn-play').textContent = 'Launch';
+    document.getElementById('btn-stop').style.display = 'none';
+    document.getElementById('online-notice').style.display = 'none';
+  }
+
+  function setScanning(n) {
+    const dot  = document.getElementById('stat-dot');
+    const text = document.getElementById('stat-status-text');
+    dot.className   = 'pulse-dot scanning';
+    text.className  = 'scanning';
+    text.textContent = `Detecting... (${n})`;
+    document.getElementById('btn-play').textContent = 'Detecting...';
+    document.getElementById('btn-play').disabled = true;
+  }
+
+  function setLive() {
+    const dot  = document.getElementById('stat-dot');
+    const text = document.getElementById('stat-status-text');
+    dot.className   = 'pulse-dot live';
+    text.className  = 'live';
+    text.textContent = 'Live';
+    document.getElementById('btn-play').classList.add('active');
+    document.getElementById('btn-play').textContent = 'Live';
+    document.getElementById('btn-play').disabled = true;
+    document.getElementById('btn-stop').style.display = 'block';
+    document.getElementById('online-notice').style.display = 'block';
   }
 
   // ── Elapsed timer ─────────────────────────────────────
-  function startElapsed(gameName) {
+  function startElapsed() {
     elapsedSeconds = 0;
     clearInterval(elapsedInterval);
-    const gameSection = document.getElementById('sc-game-section');
-    gameSection.style.display = 'block';
-    document.getElementById('sc-game-name').textContent = gameName;
-    document.getElementById('sc-elapsed').textContent = '0:00';
+    document.getElementById('stat-elapsed').textContent = '0:00';
     elapsedInterval = setInterval(() => {
       elapsedSeconds++;
-      const m   = Math.floor(elapsedSeconds / 60);
-      const s   = elapsedSeconds % 60;
-      const str = `${m}:${String(s).padStart(2, '0')}`;
-      document.getElementById('sc-elapsed').textContent      = str;
-      document.getElementById('elapsed-text').textContent    = str + ' elapsed';
+      const h = Math.floor(elapsedSeconds / 3600);
+      const m = Math.floor((elapsedSeconds % 3600) / 60);
+      const s = elapsedSeconds % 60;
+      document.getElementById('stat-elapsed').textContent = h > 0
+        ? `${h}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`
+        : `${m}:${String(s).padStart(2,'0')}`;
     }, 1000);
   }
 
@@ -953,26 +1161,13 @@
     clearInterval(elapsedInterval);
     elapsedInterval = null;
     elapsedSeconds  = 0;
-    document.getElementById('sc-game-section').style.display = 'none';
-    document.getElementById('sc-elapsed').textContent        = '0:00';
-    document.getElementById('elapsed-text').textContent      = '';
-  }
-
-  function setStatusCard(type, label) {
-    const dot    = document.getElementById('sc-dot');
-    const span   = document.getElementById('sc-label');
-    const notice = document.getElementById('sc-online-notice');
-    dot.className    = type;
-    span.className   = type;
-    span.textContent = label;
-    notice.style.display = (type === 'active') ? 'block' : 'none';
+    document.getElementById('stat-elapsed').textContent = '--:--';
   }
 
   // ── Scan countdown ────────────────────────────────────
   function startScanCountdown(onDone) {
     let n = 5;
-    setStatus('scanning', `Discord is scanning… (${n})`);
-    setStatusCard('scanning', `Scanning… (${n})`);
+    setScanning(n);
     clearInterval(scanInterval);
     scanInterval = setInterval(() => {
       n--;
@@ -981,27 +1176,21 @@
         scanInterval = null;
         onDone();
       } else {
-        setStatus('scanning', `Discord is scanning… (${n})`);
-        setStatusCard('scanning', `Scanning… (${n})`);
+        setScanning(n);
       }
     }, 1000);
   }
 
   // ── Play ──────────────────────────────────────────────
   document.getElementById('btn-play').addEventListener('click', async () => {
-    if (!selectedGame) return;
-    const exeIdx = parseInt(document.getElementById('exe-select').value, 10);
-    const exeObj = selectedGame.winExes[exeIdx];
-    if (!exeObj) return;
+    if (!selectedGame || !selectedExeEntry) return;
 
-    // exeName = short process name Discord detects (basename of the API name field)
-    // exePath = full API name for deriving the working directory folder
-    const exeName = exeBasename(exeObj.name);
-    const exePath = exeObj.name;
+    const exeName = exeBasename(selectedExeEntry.name);
+    const exePath = selectedExeEntry.name;
 
     const btn = document.getElementById('btn-play');
     btn.disabled = true;
-    btn.textContent = '…';
+    btn.textContent = '...';
 
     const res = await api.launchGame({
       appId:    selectedGame.id,
@@ -1010,24 +1199,23 @@
       gameName: selectedGame.name,
     });
 
-    btn.disabled = false;
-    btn.innerHTML = '▶ Launch';
-
     if (!res.success) {
-      setStatus('error', 'Launch failed');
+      btn.disabled = false;
+      btn.textContent = 'Launch';
+      setIdle();
       toast(res.error, 'error', 5000);
       return;
     }
 
     activeExeName = exeName;
     runningSet.add(selectedGame.id);
-    document.getElementById('btn-stop').disabled = false;
-    renderList();
+    addToRecent(selectedGame);
+    api.setTrayGame(selectedGame.name);
+    renderSections();
 
     startScanCountdown(() => {
-      setStatus('active', 'Active');
-      setStatusCard('active', 'Active');
-      startElapsed(selectedGame.name);
+      setLive();
+      startElapsed();
     });
 
     toast(`Launched ${exeName}`, 'success');
@@ -1036,7 +1224,6 @@
   // ── Stop ──────────────────────────────────────────────
   document.getElementById('btn-stop').addEventListener('click', async () => {
     if (!selectedGame) return;
-    // Use the name that was actually used at launch time, not the current dropdown
     const exeName = activeExeName || exeBasename(selectedGame.winExes[0]?.name || '');
 
     clearInterval(scanInterval);
@@ -1047,10 +1234,9 @@
     activeExeName = null;
     runningSet.delete(selectedGame.id);
     stopElapsed();
-    setStatus('', 'Not active');
-    setStatusCard('', 'Not running');
-    document.getElementById('btn-stop').disabled = true;
-    renderList();
+    setIdle();
+    api.setTrayGame(null);
+    renderSections();
 
     if (res.success) {
       toast('Process stopped', 'info');
@@ -1059,8 +1245,14 @@
     }
   });
 
+  // ── Fav button ────────────────────────────────────────
+  document.getElementById('fav-btn').addEventListener('click', () => {
+    if (!selectedGame) return;
+    toggleFavorite(selectedGame.id);
+  });
+
   // ── Search ────────────────────────────────────────────
-  document.getElementById('search').addEventListener('input', renderList);
+  document.getElementById('search').addEventListener('input', () => renderSections());
 
   // ── Custom game modal ─────────────────────────────────
   document.getElementById('add-custom-btn').addEventListener('click', () => {
@@ -1094,11 +1286,13 @@
 
     allGames.unshift(game);
     document.getElementById('modal-backdrop').classList.remove('open');
-    ['modal-name', 'modal-exe', 'modal-appid'].forEach(id => document.getElementById(id).value = '');
+    ['modal-name', 'modal-exe', 'modal-appid'].forEach(id =>
+      document.getElementById(id).value = ''
+    );
 
-    renderList();
+    renderSections();
     selectGame(game);
-    toast(`"${name}" added!`, 'success');
+    toast(`"${name}" added`, 'success');
   });
 
   // ── Boot ──────────────────────────────────────────────

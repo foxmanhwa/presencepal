@@ -6,4 +6,5 @@ contextBridge.exposeInMainWorld('presencepal', {
   stopGame:    (args) => ipcRenderer.invoke('stop-game', args),
   minimize:    ()     => ipcRenderer.send('window-minimize'),
   close:       ()     => ipcRenderer.send('window-close'),
+  setTrayGame: (name) => ipcRenderer.send('set-tray-game', name),
 });
