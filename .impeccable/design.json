@@ -1,0 +1,254 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-06-18T00:00:00Z",
+  "title": "Design System: PresencePal",
+  "extensions": {
+    "colorMeta": {
+      "ice-channel": {
+        "role": "primary",
+        "displayName": "Ice Channel",
+        "canonical": "oklch(75% 0.17 215)",
+        "tonalRamp": ["#041018", "#082040", "#0a3870", "#0a54a0", "#0878c8", "#00a8dd", "#00c2ff", "#9eebff"]
+      },
+      "ice-channel-deep": {
+        "role": "primary-hover",
+        "displayName": "Ice Channel Deep",
+        "canonical": "oklch(67% 0.16 215)",
+        "tonalRamp": ["#041018", "#072038", "#093460", "#0a4c88", "#0868b0", "#00a8dd", "#30c8f0", "#a0e8ff"]
+      },
+      "live-green": {
+        "role": "semantic-success",
+        "displayName": "Live Green",
+        "canonical": "oklch(83% 0.22 145)",
+        "tonalRamp": ["#011408", "#022814", "#044830", "#068050", "#08b070", "#00d060", "#00e676", "#a0ffd8"]
+      },
+      "stop-red": {
+        "role": "semantic-danger",
+        "displayName": "Stop Red",
+        "canonical": "oklch(62% 0.22 25)",
+        "tonalRamp": ["#1a0804", "#380c08", "#5c1010", "#841818", "#ac2020", "#d02c2c", "#f23f42", "#ffb0b0"]
+      },
+      "scan-amber": {
+        "role": "semantic-warning",
+        "displayName": "Scan Amber",
+        "canonical": "oklch(79% 0.18 78)",
+        "tonalRamp": ["#0c0800", "#201200", "#401e00", "#603400", "#885000", "#b87800", "#e09800", "#f0b429"]
+      },
+      "code-blue": {
+        "role": "semantic-code",
+        "displayName": "Code Blue",
+        "canonical": "oklch(67% 0.18 248)",
+        "tonalRamp": ["#040c1c", "#081c38", "#0c3060", "#0c4888", "#1060b0", "#2c7cd8", "#4a9eff", "#b0d8ff"]
+      },
+      "depth-black": {
+        "role": "neutral-base",
+        "displayName": "Depth Black",
+        "canonical": "oklch(8% 0.002 260)",
+        "tonalRamp": ["#020204", "#0d0d0f", "#181820", "#24242e", "#32323c", "#424250", "#545464", "#686878"]
+      },
+      "studio-dark": {
+        "role": "neutral-surface-1",
+        "displayName": "Studio Dark",
+        "canonical": "oklch(12% 0.002 260)",
+        "tonalRamp": ["#050508", "#0d0d12", "#161618", "#20202a", "#2c2c38", "#3c3c48", "#4c4c5c", "#606070"]
+      },
+      "elevated-surface": {
+        "role": "neutral-surface-2",
+        "displayName": "Elevated Surface",
+        "canonical": "oklch(16% 0.005 258)",
+        "tonalRamp": ["#080a0c", "#101418", "#1e2024", "#282c32", "#34383e", "#42464c", "#52565c", "#686c72"]
+      },
+      "subtle-border": {
+        "role": "neutral-border",
+        "displayName": "Subtle Border",
+        "canonical": "oklch(22% 0.007 258)",
+        "tonalRamp": ["#0a0c10", "#141820", "#1e2028", "#2a2d33", "#363a42", "#464a52", "#585c64", "#6e7278"]
+      },
+      "primary-text": {
+        "role": "neutral-text-high",
+        "displayName": "Primary Text",
+        "canonical": "oklch(93% 0.003 225)",
+        "tonalRamp": ["#181c1c", "#282e2e", "#3c4242", "#505858", "#686e70", "#888c8e", "#aeb4b6", "#e8e9ea"]
+      },
+      "dim-text": {
+        "role": "neutral-text-medium",
+        "displayName": "Dim Text",
+        "canonical": "oklch(83% 0.005 225)",
+        "tonalRamp": ["#141818", "#222828", "#323a3c", "#424e50", "#566062", "#707c7e", "#98a2a4", "#c8cdd4"]
+      },
+      "muted-text": {
+        "role": "neutral-text-low",
+        "displayName": "Muted Text",
+        "canonical": "oklch(38% 0.008 248)",
+        "tonalRamp": ["#0c0e12", "#181c20", "#262a30", "#343840", "#40454e", "#4a4f57", "#6a7080", "#9298a4"]
+      },
+      "brand-gray": {
+        "role": "neutral-brand",
+        "displayName": "Brand Gray",
+        "canonical": "oklch(61% 0.006 248)",
+        "tonalRamp": ["#141618", "#222428", "#303438", "#3e4248", "#4e5258", "#626870", "#8b8f96", "#b4b8be"]
+      }
+    },
+    "shadows": [
+      {
+        "name": "launch-hover-glow",
+        "value": "0 2px 12px rgba(0,194,255,0.15)",
+        "purpose": "Hover state on the primary action button only. Signals 'press this.' Never reused on other elements."
+      },
+      {
+        "name": "active-inset-marker",
+        "value": "inset 2px 0 0 #00c2ff",
+        "purpose": "Left-edge active state indicator on the selected game list item. Uses inset so item width never shifts."
+      },
+      {
+        "name": "modal-scrim",
+        "value": "rgba(0,0,0,0.65)",
+        "purpose": "Backdrop overlay behind the Add Custom Game modal. Background color on the modal-backdrop element."
+      }
+    ],
+    "motion": [
+      {
+        "name": "state-transition",
+        "value": "0.15s ease-out",
+        "purpose": "Default transition duration and easing for all interactive state changes (color, background, border, opacity)."
+      },
+      {
+        "name": "fast-transition",
+        "value": "0.1s ease-out",
+        "purpose": "Faster transitions for high-frequency elements like game list item hover states."
+      },
+      {
+        "name": "spin",
+        "value": "spin 0.7s linear infinite",
+        "purpose": "Loading spinner animation. Only during initial game list fetch."
+      },
+      {
+        "name": "dot-scan",
+        "value": "dot-scan 0.7s ease-in-out infinite",
+        "purpose": "Opacity pulse on the scan-amber status dot. Gate with prefers-reduced-motion. The only ambient animation in the UI."
+      }
+    ],
+    "breakpoints": []
+  },
+  "components": [
+    {
+      "name": "Launch Button (Rest)",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Primary action button. Launches the selected game process. Full-width within launch area.",
+      "html": "<button class=\"ds-btn-launch\">Launch</button>",
+      "css": ".ds-btn-launch { display: flex; align-items: center; justify-content: center; flex: 1; height: 44px; background: #00c2ff; color: #000000; border: none; border-radius: 8px; font-family: system-ui, -apple-system, 'Segoe UI', sans-serif; font-size: 14px; font-weight: 600; cursor: pointer; transition: background 0.15s, box-shadow 0.15s; } .ds-btn-launch:hover { background: #00a8dd; box-shadow: 0 2px 12px rgba(0,194,255,0.15); } .ds-btn-launch:disabled { opacity: 0.4; cursor: not-allowed; }"
+    },
+    {
+      "name": "Launch Button (Active / Running)",
+      "kind": "button",
+      "refersTo": "button-primary-active",
+      "description": "Launch button state when a game process is running. No animation — the color change is the entire signal.",
+      "html": "<button class=\"ds-btn-launch ds-btn-launch--active\">Stop Playing</button>",
+      "css": ".ds-btn-launch { display: flex; align-items: center; justify-content: center; flex: 1; height: 44px; border: none; border-radius: 8px; font-family: system-ui, -apple-system, 'Segoe UI', sans-serif; font-size: 14px; font-weight: 600; cursor: pointer; transition: background 0.15s; } .ds-btn-launch--active { background: #00e676; color: #000000; } .ds-btn-launch--active:hover { background: #00c960; }"
+    },
+    {
+      "name": "Stop Button",
+      "kind": "button",
+      "refersTo": "button-stop",
+      "description": "Destructive ghost button. Appears alongside the active launch button to end a game session.",
+      "html": "<button class=\"ds-btn-stop\">Stop</button>",
+      "css": ".ds-btn-stop { display: flex; align-items: center; justify-content: center; height: 44px; padding: 0 22px; background: #1e2024; border: 1px solid #2a2d33; color: #f23f42; border-radius: 8px; font-family: system-ui, -apple-system, 'Segoe UI', sans-serif; font-size: 14px; font-weight: 600; cursor: pointer; transition: background 0.15s; white-space: nowrap; } .ds-btn-stop:hover { background: #2a2d33; }"
+    },
+    {
+      "name": "Search Input",
+      "kind": "input",
+      "refersTo": "input-search",
+      "description": "Sidebar game search field. Full-width, 13px body font, focus shifts border to Ice Channel.",
+      "html": "<input class=\"ds-input-search\" type=\"text\" placeholder=\"Search games...\" />",
+      "css": ".ds-input-search { width: 100%; padding: 7px 10px; background: #1e2024; border: 1px solid #2a2d33; border-radius: 8px; color: #e8e9ea; font-family: system-ui, -apple-system, 'Segoe UI', sans-serif; font-size: 13px; outline: none; transition: border-color 0.15s; } .ds-input-search:focus { border-color: #00c2ff; } .ds-input-search::placeholder { color: #4a4f57; }"
+    },
+    {
+      "name": "Game List Item",
+      "kind": "nav",
+      "refersTo": "game-item",
+      "description": "44px list item in the sidebar game list. Virtual scrolled at scale. Color avatar + truncated game name.",
+      "html": "<div class=\"ds-game-item\"><div class=\"ds-game-avatar\" style=\"background:#1a3a4a\">C</div><span class=\"ds-game-name\">Clash Royale</span></div>",
+      "css": ".ds-game-item { display: flex; align-items: center; gap: 9px; height: 44px; padding: 0 10px; border-radius: 6px; margin: 1px 6px; cursor: pointer; position: relative; transition: background 0.1s; } .ds-game-item:hover { background: #1e2024; } .ds-game-item:hover .ds-game-name { color: #ffffff; } .ds-game-avatar { width: 28px; height: 28px; border-radius: 6px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-family: system-ui, -apple-system, sans-serif; font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.75); } .ds-game-name { font-family: system-ui, -apple-system, sans-serif; font-size: 13px; font-weight: 500; color: #c8cdd4; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transition: color 0.1s; }"
+    },
+    {
+      "name": "Game List Item (Active)",
+      "kind": "nav",
+      "refersTo": "game-item-active",
+      "description": "Active/selected state of a game list item. Ice Channel tint background with inset left-edge marker.",
+      "html": "<div class=\"ds-game-item ds-game-item--active\"><div class=\"ds-game-avatar\" style=\"background:#1a3a4a\">C</div><span class=\"ds-game-name\">Clash Royale</span><div class=\"ds-game-dot\"></div></div>",
+      "css": ".ds-game-item { display: flex; align-items: center; gap: 9px; height: 44px; padding: 0 10px; border-radius: 6px; margin: 1px 6px; cursor: pointer; position: relative; } .ds-game-item--active { background: rgba(0,194,255,0.09); box-shadow: inset 2px 0 0 #00c2ff; } .ds-game-item--active .ds-game-name { color: #ffffff; } .ds-game-avatar { width: 28px; height: 28px; border-radius: 6px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-family: system-ui, -apple-system, sans-serif; font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.75); } .ds-game-name { font-family: system-ui, -apple-system, sans-serif; font-size: 13px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } .ds-game-dot { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); width: 6px; height: 6px; border-radius: 50%; background: #00e676; }"
+    },
+    {
+      "name": "Stat Box",
+      "kind": "card",
+      "refersTo": "stat-box",
+      "description": "2-up grid in the game detail view. Shows Status and Elapsed Time. No shadows.",
+      "html": "<div class=\"ds-stat-box\"><div class=\"ds-stat-label\">Status</div><div class=\"ds-stat-value\"><div class=\"ds-status-dot ds-status-dot--live\"></div><span class=\"ds-stat-text ds-stat-text--live\">Live</span></div></div>",
+      "css": ".ds-stat-box { background: #1e2024; border: 1px solid #1e2024; border-radius: 8px; padding: 13px 16px; } .ds-stat-label { font-family: system-ui, -apple-system, sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #4a4f57; margin-bottom: 7px; } .ds-stat-value { display: flex; align-items: center; gap: 6px; font-family: system-ui, -apple-system, sans-serif; font-size: 14px; font-weight: 600; color: #ffffff; } .ds-status-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; } .ds-status-dot--live { background: #00e676; } .ds-status-dot--scanning { background: #f0b429; animation: ds-dot-scan 0.7s ease-in-out infinite; } .ds-status-dot--idle { background: #4a4f57; } .ds-stat-text--live { color: #00e676; } .ds-stat-text--scanning { color: #f0b429; } .ds-stat-text--idle { color: #4a4f57; } @keyframes ds-dot-scan { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }"
+    },
+    {
+      "name": "Exe Badge",
+      "kind": "chip",
+      "refersTo": null,
+      "description": "Monospace chip below the game title showing the .exe filename Discord expects. Data tag, not a UI label.",
+      "html": "<span class=\"ds-exe-badge\">clashroyale.exe</span>",
+      "css": ".ds-exe-badge { display: inline-block; padding: 3px 8px; background: #0d0d0f; border: 1px solid #1e2024; border-radius: 4px; font-family: 'Consolas', 'Courier New', monospace; font-size: 11px; color: #4a9eff; line-height: 1.4; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Signal Monitor",
+    "overview": "PresencePal is a status instrument, not a dashboard. Its job is to read state at a glance and execute actions in under ten seconds. Every design decision derives from that constraint: what earns screen space must communicate something, and what does not communicate is removed. The aesthetic is calibrated, not styled — like a rack-mounted hardware monitor or a well-configured terminal, the surface is functional by nature.\n\nThe palette is near-monochrome by design. Three dark backgrounds form a quiet depth stack; color appears only where state demands it. Ice Channel cyan marks the live path — focused input, active selection, the brand word that means 'this works.' Green means running. Amber means scanning. Red means stop. These four colors are information, not decoration, and they carry that responsibility exclusively.\n\nThe app lives beside Discord all day. It is designed to look like it belongs to a different, quieter category — not a Discord plugin, not a gaming tool, not a SaaS interface. The frame is invisible; the status is everything.",
+    "keyCharacteristics": [
+      "Near-monochrome dark field with four semantic state colors",
+      "Status-first: running indicators, elapsed timers, and scanning feedback are the primary visual hierarchy",
+      "44px as the universal touch target across game items, launch, and stop",
+      "No decorative chrome; every element is functional or absent",
+      "System-UI typography at neutral weight — readable, zero branding overhead"
+    ],
+    "rules": [
+      {
+        "name": "The One Voice Rule",
+        "body": "Ice Channel is the only accent. It carries the active path, the brand word, and focused state. Any other use dilutes the signal. When in doubt, use Muted Text, not the accent.",
+        "section": "colors"
+      },
+      {
+        "name": "The Four-Color Doctrine",
+        "body": "Status is expressed in exactly four colors: Cyan (active path), Green (running), Amber (scanning), Red (stop). No other color encodes state. A new state must map to one of these four or the doctrine must be explicitly revised.",
+        "section": "colors"
+      },
+      {
+        "name": "The Mono Boundary Rule",
+        "body": "Monospace appears only for technical data the user might copy: exe filenames and elapsed time digits. It does not appear in nav labels, headings, or button text.",
+        "section": "typography"
+      },
+      {
+        "name": "The Tonal Lift Rule",
+        "body": "New surfaces are expressed by stepping one level up the bg ramp (depth-black → studio-dark → elevated-surface). Shadows are prohibited as a depth mechanism. The only allowed shadow is the launch hover glow, which is state feedback, not elevation.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do use Ice Channel only where the user is told 'this is the active path' — focused inputs, selected game items, the Launch button, the 'Pal' wordmark.",
+      "Do express elevation through the three-step tonal ramp (depth-black → studio-dark → elevated-surface). No shadows on surfaces at rest.",
+      "Do keep all interactive targets at 44px height — game items, Launch, Stop, modal action buttons.",
+      "Do use the four semantic state colors (Cyan, Green, Amber, Red) to communicate exactly one concept each, never for decoration.",
+      "Do use box-shadow: inset 2px 0 0 #00c2ff for left-edge state markers so item width never shifts.",
+      "Do use Consolas exclusively for exe filenames and elapsed time digits.",
+      "Do keep transitions at 0.1-0.15s with ease-out easing. State changes are immediate feedback, not choreography.",
+      "Do gate the scan dot opacity animation behind prefers-reduced-motion: reduce. It is the only ambient loop in the UI."
+    ],
+    "donts": [
+      "Don't add blurple, pill buttons, or server-sidebar layouts. PresencePal works beside Discord, not inside it.",
+      "Don't use neon gradients, glow grids, or Razer-style visual noise. The user's gaming setup is already loud — this app is the calm instrument they reach for.",
+      "Don't apply hero metrics, big-number stat cards with gradient accents, or Figma-template card grids. No generic SaaS dashboard patterns.",
+      "Don't use border-left greater than 1px as a colored stripe accent. Use inset box-shadow or tinted background instead.",
+      "Don't use gradient text (background-clip: text with a gradient). Emphasis through weight or size only.",
+      "Don't use glassmorphism: no blurs, no frosted surfaces, no backdrop-filter.",
+      "Don't add shadows to surfaces at rest. The launch hover glow is the only allowed shadow; it exists to signal 'this is the primary action.'",
+      "Don't animate layout properties (height, width, top, left, padding). Transitions apply to color, background, opacity, and box-shadow only.",
+      "Don't introduce a fifth state color. The Four-Color Doctrine is structural; map new states to the existing four or revise the doctrine explicitly.",
+      "Don't use Ice Channel for decorative fills, background washes, or hover highlights on non-interactive elements. Its rarity is its meaning."
+    ]
+  }
+}
