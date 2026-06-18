@@ -15,7 +15,9 @@
       --border2:    #2a2d33;
       --text:       #e8e9ea;
       --text-dim:   #c8cdd4;
-      --text-muted: #4a4f57;
+      --text-muted: #6b7280;
+      --text-bright: #f8f9fa;
+      --brand-gray:  #8b8f96;
       --accent:     #00c2ff;
       --accent-h:   #00a8dd;
       --green:      #00e676;
@@ -25,6 +27,9 @@
     }
 
     html, body { height: 100%; overflow: hidden; }
+
+    *:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    .game-item:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; border-radius: 6px; }
 
     body {
       font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
@@ -50,7 +55,7 @@
       flex-shrink: 0;
     }
     .brand .name { font-size: 13px; font-weight: 700; }
-    .brand .name .presence-text { color: #8b8f96; }
+    .brand .name .presence-text { color: var(--brand-gray); }
     .brand .name .pal-text      { color: var(--accent); }
     #titlebar-controls {
       display: flex;
@@ -101,7 +106,7 @@
       outline: none;
       transition: border-color 0.15s;
     }
-    #search:focus { border-color: var(--accent); }
+    #search:focus-visible { border-color: var(--accent); outline: none; }
     #search::placeholder { color: var(--text-muted); }
 
     #sidebar-body {
@@ -111,7 +116,7 @@
     }
     #sidebar-body::-webkit-scrollbar { width: 3px; }
     #sidebar-body::-webkit-scrollbar-track { background: transparent; }
-    #sidebar-body::-webkit-scrollbar-thumb { background: #1e2024; border-radius: 3px; }
+    #sidebar-body::-webkit-scrollbar-thumb { background: var(--bg3); border-radius: 3px; }
 
     .sidebar-section { padding-bottom: 4px; }
 
@@ -150,8 +155,6 @@
       color: var(--text-muted);
     }
 
-    #more-results { display: none; }
-
     /* Game list items */
     .game-item {
       height: 44px;
@@ -165,13 +168,13 @@
       transition: background 0.1s;
       position: relative;
     }
-    .game-item:hover { background: #1e2024; }
-    .game-item:hover .game-name { color: #ffffff; }
+    .game-item:hover { background: var(--bg3); }
+    .game-item:hover .game-name { color: var(--text-bright); }
     .game-item.active {
       background: rgba(0,194,255,0.09);
       box-shadow: inset 2px 0 0 var(--accent);
     }
-    .game-item.active .game-name { color: #ffffff; }
+    .game-item.active .game-name { color: var(--text-bright); }
     .game-item.running::after {
       content: '';
       position: absolute;
@@ -208,9 +211,8 @@
     }
     #game-list::-webkit-scrollbar { width: 3px; }
     #game-list::-webkit-scrollbar-track { background: transparent; }
-    #game-list::-webkit-scrollbar-thumb { background: #1e2024; border-radius: 3px; }
+    #game-list::-webkit-scrollbar-thumb { background: var(--bg3); border-radius: 3px; }
 
-    #game-count { display: none; }
 
     .game-info { flex: 1; min-width: 0; }
     .game-name {
@@ -245,7 +247,7 @@
 
     #api-status {
       font-size: 10px;
-      color: #2a2d33;
+      color: var(--text-muted);
       text-align: center;
       margin-top: 5px;
     }
@@ -275,7 +277,7 @@
       font-weight: 700;
       letter-spacing: -0.5px;
     }
-    #empty-state .app-name .presence-text { color: #8b8f96; }
+    #empty-state .app-name .presence-text { color: var(--brand-gray); }
     #empty-state .app-name .pal-text      { color: var(--accent); }
     #empty-state .sub {
       font-size: 12px;
@@ -290,7 +292,7 @@
       overflow-y: auto;
     }
     #game-view::-webkit-scrollbar { width: 3px; }
-    #game-view::-webkit-scrollbar-thumb { background: #1e2024; border-radius: 3px; }
+    #game-view::-webkit-scrollbar-thumb { background: var(--bg3); border-radius: 3px; }
 
     /* Game header */
     #game-header {
@@ -316,7 +318,6 @@
       height: 56px;
       flex-shrink: 0;
     }
-    #hdr-icon-glow { display: none; }
     #hdr-icon-wrap {
       width: 56px; height: 56px;
       border-radius: 10px;
@@ -337,7 +338,7 @@
     #hdr-name {
       font-size: 20px;
       font-weight: 700;
-      color: #ffffff;
+      color: var(--text-bright);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -490,9 +491,9 @@
       display: none;
       height: 44px;
       padding: 0 22px;
-      background: #1e2024;
-      border: 1px solid #2a2d33;
-      color: #f23f42;
+      background: var(--bg3);
+      border: 1px solid var(--border2);
+      color: var(--red);
       border-radius: 8px;
       font-size: 14px;
       font-weight: 600;
@@ -501,7 +502,7 @@
       white-space: nowrap;
       flex-shrink: 0;
     }
-    #btn-stop:hover { background: #2a2d33; }
+    #btn-stop:hover { background: var(--border2); }
 
     /* Online notice */
     #online-notice {
@@ -588,6 +589,12 @@
     .toast.error   { background: #3a1a1e; border: 1px solid var(--red); color: var(--red); }
     .toast.info    { background: var(--bg3); border: 1px solid var(--border2); color: var(--text); }
     .toast.warn    { background: #3a2e0a; border: 1px solid var(--yellow); color: var(--yellow); }
+
+    @media (prefers-reduced-motion: reduce) {
+      .spinner { animation: none; border-top-color: var(--accent); }
+      .pulse-dot.scanning { animation: none; opacity: 0.65; }
+      .toast { transition: none; }
+    }
   </style>
 </head>
 <body>
@@ -597,8 +604,8 @@
     <span class="name"><span class="presence-text">Presence</span><span class="pal-text">Pal</span></span>
   </div>
   <div id="titlebar-controls">
-    <button class="tb-btn minimize" onclick="window.presencepal.minimize()">&#8722;</button>
-    <button class="tb-btn close"    onclick="window.presencepal.close()">&#10005;</button>
+    <button class="tb-btn minimize" aria-label="Minimize" onclick="window.presencepal.minimize()">&#8722;</button>
+    <button class="tb-btn close"    aria-label="Close"    onclick="window.presencepal.close()">&#10005;</button>
   </div>
 </div>
 
@@ -606,7 +613,7 @@
 
   <aside id="sidebar">
     <div id="sidebar-header">
-      <input id="search" type="text" placeholder="Search games..." autocomplete="off" />
+      <input id="search" type="text" placeholder="Search games..." autocomplete="off" aria-label="Search games" />
     </div>
 
     <div id="sidebar-body">
@@ -625,15 +632,13 @@
       <!-- All / Results -->
       <div id="all-section" class="sidebar-section">
         <div class="section-label" id="all-label">All Games</div>
-        <div id="game-count"></div>
-        <div id="game-list">
+        <div id="game-list" role="listbox" aria-label="Game library">
           <div id="loading-state">
             <div class="spinner"></div>
             <span>Loading games...</span>
           </div>
-          <div id="no-results">No games found</div>
+          <div id="no-results">No results — try a shorter search, or add a custom game below.</div>
         </div>
-        <div id="more-results"></div>
       </div>
     </div>
 
@@ -653,7 +658,6 @@
       <div id="game-header">
         <div class="hdr-left">
           <div id="hdr-icon-container">
-            <div id="hdr-icon-glow"></div>
             <div id="hdr-icon-wrap"></div>
           </div>
           <div id="hdr-text">
@@ -661,7 +665,7 @@
             <div id="hdr-exe-badge">game.exe</div>
           </div>
         </div>
-        <button id="fav-btn" title="Add to favorites">&#9734;</button>
+        <button id="fav-btn" aria-label="Add to favorites">&#9734;</button>
       </div>
 
       <div id="stats-row">
@@ -679,7 +683,7 @@
       </div>
 
       <div id="exe-field">
-        <span class="field-label">Executable</span>
+        <label for="exe-select" class="field-label">Executable</label>
         <select id="exe-select"></select>
       </div>
 
@@ -696,19 +700,21 @@
 </div>
 
 <div id="modal-backdrop">
-  <div id="modal">
-    <h2>Add Custom Game</h2>
+  <div id="modal" role="dialog" aria-modal="true" aria-labelledby="modal-h2">
+    <h2 id="modal-h2">Add Custom Game</h2>
     <div class="field">
-      <label>Game Name</label>
+      <label for="modal-name">Game Name</label>
       <input id="modal-name" type="text" placeholder="e.g. My Game" />
     </div>
     <div class="field">
-      <label>Executable Name</label>
-      <input id="modal-exe" type="text" placeholder="game.exe" />
+      <label for="modal-exe">Executable Name</label>
+      <input id="modal-exe" type="text" placeholder="e.g. clashroyale.exe" />
+      <small id="modal-exe-hint" style="display:block;margin-top:4px;font-size:11px;color:var(--text-muted)">The exact .exe Discord expects. Find it at discord.com/api/v9/applications/detectable.</small>
     </div>
     <div class="field">
-      <label>Discord App ID (optional)</label>
-      <input id="modal-appid" type="text" placeholder="Leave blank for random" />
+      <label for="modal-appid">Discord App ID <span style="font-weight:400;color:var(--text-muted)">(optional)</span></label>
+      <input id="modal-appid" type="text" placeholder="Leave blank to use no icon" />
+      <small style="display:block;margin-top:4px;font-size:11px;color:var(--text-muted)">Controls the rich presence icon. Leave blank to show no icon.</small>
     </div>
     <div class="modal-actions">
       <button class="btn btn-ghost"   id="modal-cancel">Cancel</button>
@@ -717,7 +723,7 @@
   </div>
 </div>
 
-<div id="toast-container"></div>
+<div id="toast-container" aria-live="polite" role="status"></div>
 
 <script src="games.js"></script>
 <script>
@@ -742,6 +748,17 @@
 
   let favorites    = new Set(JSON.parse(localStorage.getItem('pp_favorites') || '[]'));
   let recentGames  = JSON.parse(localStorage.getItem('pp_recent') || '[]');
+  let customGames  = JSON.parse(localStorage.getItem('pp_custom_games') || '[]');
+
+  // ── Error messages ───────────────────────────────────
+  function friendlyError(err) {
+    const msg = String(err || '');
+    if (msg.includes('ENOENT'))                          return 'Could not find the required file. Try restarting PresencePal.';
+    if (msg.includes('EACCES') || msg.includes('EPERM')) return 'Permission denied. Try running PresencePal as administrator.';
+    if (msg.includes('ETIMEDOUT') || msg.includes('timeout')) return 'Connection timed out. Check your network.';
+    if (msg.includes('ECONNREFUSED') || msg.includes('fetch')) return 'Could not connect to Discord. Check your connection.';
+    return 'Something went wrong. Try restarting PresencePal.';
+  }
 
   // ── Helpers ───────────────────────────────────────────
   function exeBasename(name) {
@@ -844,6 +861,9 @@
       + (selectedGame?.id === game.id ? ' active'  : '')
       + (runningSet.has(game.id)      ? ' running' : '');
     el.dataset.id = game.id;
+    el.tabIndex = 0;
+    el.setAttribute('role', 'option');
+    el.setAttribute('aria-selected', selectedGame?.id === game.id ? 'true' : 'false');
 
     const nameEl = document.createElement('div');
     nameEl.className = 'game-name';
@@ -856,6 +876,9 @@
     el.appendChild(makeSmallIcon(game));
     el.appendChild(info);
     el.addEventListener('click', () => selectGame(game));
+    el.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); selectGame(game); }
+    });
     return el;
   }
 
@@ -899,7 +922,7 @@
     const starred = favorites.has(selectedGame.id);
     btn.innerHTML = starred ? '&#9733;' : '&#9734;';
     btn.classList.toggle('starred', starred);
-    btn.title = starred ? 'Remove from favorites' : 'Add to favorites';
+    btn.setAttribute('aria-label', starred ? 'Remove from favorites' : 'Add to favorites');
   }
 
   // ── Load games ────────────────────────────────────────
@@ -919,8 +942,15 @@
       allGames = (typeof GAMES !== 'undefined' ? GAMES : []).map(normalizeFallbackGame);
       apiStatus.textContent = 'Offline — built-in list';
       apiStatus.className = 'fallback';
-      if (!res.success) toast(`Could not reach Discord API: ${res.error}`, 'warn', 5000);
+      if (!res.success) toast("Couldn't reach the Discord games list. Using the built-in list instead.", 'warn', 5000);
     }
+
+    // Merge persisted custom games (prepend; skip any that already exist in the list)
+    customGames.forEach(c => {
+      if (!allGames.find(g => g.id === c.id)) {
+        allGames.unshift({ id: c.id, name: c.name, icon: null, winExes: c.winExes || [], primaryExe: c.primaryExe || null, source: 'custom' });
+      }
+    });
 
     document.getElementById('loading-state').style.display = 'none';
     renderSections();
@@ -990,20 +1020,14 @@
   function renderMainList(q) {
     const list      = document.getElementById('game-list');
     const noResults = document.getElementById('no-results');
-    const countEl   = document.getElementById('game-count');
 
     noResults.style.display = 'none';
-    document.getElementById('more-results').style.display = 'none';
 
     const savedScroll = list.scrollTop;
 
     vsGames = q
       ? allGames.filter(g => g.name.toLowerCase().includes(q))
       : allGames;
-
-    countEl.textContent = (!q && vsGames.length)
-      ? `${vsGames.length.toLocaleString()} games`
-      : '';
 
     list.innerHTML = '';
     vsContainer = null;
@@ -1034,7 +1058,6 @@
 
     // Header icon
     const wrap = document.getElementById('hdr-icon-wrap');
-    const glow = document.getElementById('hdr-icon-glow');
     wrap.innerHTML = '';
     const url = iconUrl(game.id, game.icon, 128);
     if (url) {
@@ -1047,14 +1070,11 @@
         img.remove();
         wrap.style.background = avatarColor(game.name);
         wrap.textContent = (game.name || '?')[0].toUpperCase();
-        glow.classList.remove('on');
       };
       wrap.appendChild(img);
-      glow.classList.add('on');
     } else {
       wrap.style.background = avatarColor(game.name);
       wrap.textContent = (game.name || '?')[0].toUpperCase();
-      glow.classList.remove('on');
     }
 
     document.getElementById('hdr-name').textContent = game.name;
@@ -1101,6 +1121,7 @@
       setIdle();
     }
 
+    document.getElementById('online-notice').style.display = 'block';
     document.getElementById('empty-state').style.display = 'none';
     document.getElementById('game-view').style.display   = 'flex';
 
@@ -1118,7 +1139,6 @@
     document.getElementById('btn-play').classList.remove('active');
     document.getElementById('btn-play').textContent = 'Launch';
     document.getElementById('btn-stop').style.display = 'none';
-    document.getElementById('online-notice').style.display = 'none';
   }
 
   function setScanning(n) {
@@ -1126,9 +1146,10 @@
     const text = document.getElementById('stat-status-text');
     dot.className   = 'pulse-dot scanning';
     text.className  = 'scanning';
-    text.textContent = `Detecting... (${n})`;
-    document.getElementById('btn-play').textContent = 'Detecting...';
+    text.textContent = `Detecting… (${n})`;
+    document.getElementById('btn-play').textContent = 'Detecting…';
     document.getElementById('btn-play').disabled = true;
+    document.getElementById('btn-stop').style.display = 'block';
   }
 
   function setLive() {
@@ -1141,7 +1162,6 @@
     document.getElementById('btn-play').textContent = 'Live';
     document.getElementById('btn-play').disabled = true;
     document.getElementById('btn-stop').style.display = 'block';
-    document.getElementById('online-notice').style.display = 'block';
   }
 
   // ── Elapsed timer ─────────────────────────────────────
@@ -1206,7 +1226,7 @@
       btn.disabled = false;
       btn.textContent = 'Launch';
       setIdle();
-      toast(res.error, 'error', 5000);
+      toast(friendlyError(res.error), 'error', 5000);
       return;
     }
 
@@ -1242,9 +1262,9 @@
     renderSections();
 
     if (res.success) {
-      toast('Process stopped', 'info');
+      toast('Activity stopped', 'info');
     } else {
-      toast(`Stop failed: ${res.error}`, 'error');
+      toast(friendlyError(res.error), 'error');
     }
   });
 
@@ -1258,17 +1278,48 @@
   document.getElementById('search').addEventListener('input', () => renderSections());
 
   // ── Custom game modal ─────────────────────────────────
-  document.getElementById('add-custom-btn').addEventListener('click', () => {
+  let _modalTrigger = null;
+
+  function openModal() {
+    _modalTrigger = document.activeElement;
     document.getElementById('modal-backdrop').classList.add('open');
-    document.getElementById('modal-name').focus();
-  });
-  document.getElementById('modal-cancel').addEventListener('click', () => {
+    requestAnimationFrame(() => document.getElementById('modal-name').focus());
+  }
+
+  function closeModal() {
     document.getElementById('modal-backdrop').classList.remove('open');
+    ['modal-name', 'modal-exe', 'modal-appid'].forEach(id =>
+      document.getElementById(id).value = ''
+    );
+    _modalTrigger?.focus();
+    _modalTrigger = null;
+  }
+
+  // Focus trap + Escape inside modal
+  document.getElementById('modal').addEventListener('keydown', (e) => {
+    const focusable = [...document.getElementById('modal').querySelectorAll(
+      'button, input, [tabindex]:not([tabindex="-1"])'
+    )];
+    const first = focusable[0];
+    const last  = focusable[focusable.length - 1];
+    if (e.key === 'Tab') {
+      if (e.shiftKey) {
+        if (document.activeElement === first) { e.preventDefault(); last.focus(); }
+      } else {
+        if (document.activeElement === last)  { e.preventDefault(); first.focus(); }
+      }
+    }
+    if (e.key === 'Escape') { e.stopPropagation(); closeModal(); }
   });
+
+  document.getElementById('add-custom-btn').addEventListener('click', openModal);
+
+  document.getElementById('modal-cancel').addEventListener('click', closeModal);
+
   document.getElementById('modal-backdrop').addEventListener('click', e => {
-    if (e.target === document.getElementById('modal-backdrop'))
-      document.getElementById('modal-backdrop').classList.remove('open');
+    if (e.target === document.getElementById('modal-backdrop')) closeModal();
   });
+
   document.getElementById('modal-add').addEventListener('click', () => {
     const name   = document.getElementById('modal-name').value.trim();
     const exeRaw = document.getElementById('modal-exe').value.trim();
@@ -1287,15 +1338,40 @@
       source:     'custom',
     };
 
+    // Persist custom game across restarts
+    customGames.push({ id: game.id, name: game.name, winExes: game.winExes, primaryExe: game.primaryExe });
+    localStorage.setItem('pp_custom_games', JSON.stringify(customGames));
+
     allGames.unshift(game);
-    document.getElementById('modal-backdrop').classList.remove('open');
-    ['modal-name', 'modal-exe', 'modal-appid'].forEach(id =>
-      document.getElementById(id).value = ''
-    );
+    closeModal();
 
     renderSections();
     selectGame(game);
     toast(`"${name}" added`, 'success');
+  });
+
+  // ── Keyboard shortcuts ────────────────────────────────
+  // "/" focuses search (when not already in an input or modal)
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== '/') return;
+    if (['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement?.tagName)) return;
+    if (document.getElementById('modal-backdrop').classList.contains('open')) return;
+    e.preventDefault();
+    document.getElementById('search').focus();
+  });
+
+  // Arrow key navigation within the rendered game list items
+  document.getElementById('game-list').addEventListener('keydown', (e) => {
+    if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return;
+    e.preventDefault();
+    const items = [...document.querySelectorAll('#game-list .game-item')];
+    if (!items.length) return;
+    const idx = items.indexOf(document.activeElement);
+    if (e.key === 'ArrowDown') {
+      (idx < items.length - 1 ? items[idx + 1] : items[0]).focus();
+    } else {
+      (idx > 0 ? items[idx - 1] : items[items.length - 1]).focus();
+    }
   });
 
   // ── Boot ──────────────────────────────────────────────
