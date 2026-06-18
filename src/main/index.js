@@ -59,12 +59,15 @@ ipcMain.handle('launch-game', async (_, { appId, exeName, exePath, gameName }) =
   console.log('[presencepal] folder:', gameDir);
   console.log('[presencepal] exe:   ', exeName);
 
-  // Kill any prior instance for this app
+  // Kill any prior instance tracked by this app
   const existing = runningProcesses.get(String(appId));
   if (existing) {
     try { existing.child.kill(); } catch {}
     runningProcesses.delete(String(appId));
   }
+
+  // Also kill any stale process with this exe name (e.g. from a previous session)
+  await new Promise(resolve => exec(`taskkill /F /IM "${exeName}"`, () => resolve()));
 
   try {
     fs.mkdirSync(gameDir, { recursive: true });
@@ -87,7 +90,7 @@ ipcMain.handle('launch-game', async (_, { appId, exeName, exePath, gameName }) =
   }
 
   try {
-    const child = spawn(targetExe, ['--title', gameName, '--tray'], {
+    const child = spawn(targetExe, ['--title', gameName, '--tray', '--force-device-scale-factor=1'], {
       cwd: gameDir,
       detached: false,
     });
