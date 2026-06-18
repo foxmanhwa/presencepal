@@ -198,13 +198,25 @@
       display: flex; align-items: center; justify-content: center;
       font-size: 11px;
       font-weight: 700;
-      color: var(--text-muted);
+      color: rgba(255,255,255,0.75);
     }
     .game-icon-sm img {
       width: 28px; height: 28px;
       object-fit: cover;
       display: block;
     }
+
+    /* Virtual-scroll: each row must be exactly this height */
+    .game-item { height: 44px; }
+
+    /* Virtual-scroll container */
+    #game-list {
+      height: calc(100vh - 220px);
+      overflow-y: auto;
+    }
+    #game-list::-webkit-scrollbar { width: 3px; }
+    #game-list::-webkit-scrollbar-track { background: transparent; }
+    #game-list::-webkit-scrollbar-thumb { background: #2a2a2e; border-radius: 3px; }
 
     .game-info { flex: 1; min-width: 0; }
     .game-name {
@@ -775,7 +787,13 @@
   let elapsedSeconds  = 0;
   let activeExeName   = null;
   const runningSet    = new Set();
-  const DISPLAY_LIMIT = 150;
+
+  // ── Virtual scroll ────────────────────────────────────
+  const VS_ITEM_H   = 44;
+  const VS_OVERSCAN = 20;
+  const VS_WINDOW   = 150;
+  let vsGames     = [];
+  let vsContainer = null;
 
   let favorites    = new Set(JSON.parse(localStorage.getItem('pp_favorites') || '[]'));
   let recentGames  = JSON.parse(localStorage.getItem('pp_recent') || '[]');
@@ -808,31 +826,12 @@
     return `https://cdn.discordapp.com/app-icons/${id}/${hash}.png?size=${size}`;
   }
 
-  // ── Avatar colors (keyed by first letter of game name) ────────────────────
-  // Discord's detectable games API returns no icon hashes, so every game
-  // falls back to a colored avatar. 10 muted dark tones cycle A–Z.
-  const AVATAR_COLORS = [
-    '#0f1e33', // A K U — navy
-    '#0f2318', // B L V — forest
-    '#2a1212', // C M W — deep red
-    '#1e0f2d', // D N X — violet
-    '#1e1a0a', // E O Y — dark gold
-    '#0f2222', // F P Z — teal
-    '#280f22', // G Q   — burgundy
-    '#0f1722', // H R   — slate
-    '#1a220f', // I S   — olive
-    '#22130f', // J T   — sienna
-  ];
+  // ── Avatar colors + letter fallback ──────────────────────────────────────
+  const AVATAR_COLORS = ['#1a3a4a','#2a1a4a','#1a4a2a','#4a2a1a','#3a1a3a','#1a4a4a','#4a1a1a','#2a3a1a','#1a2a4a','#3a3a1a'];
 
   function avatarColor(name) {
-    const code = ((name || '').toUpperCase().charCodeAt(0) || 65) - 65;
-    return AVATAR_COLORS[((code % AVATAR_COLORS.length) + AVATAR_COLORS.length) % AVATAR_COLORS.length];
+    return AVATAR_COLORS[(name || 'A').charCodeAt(0) % AVATAR_COLORS.length];
   }
-
-  // 13 px gamepad for 28 px sidebar icons
-  const GAMEPAD_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="#555860" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="5"/><path d="M6 12h4M8 10v4"/><circle cx="16" cy="11" r="1.2" fill="#555860" stroke="none"/><circle cx="18" cy="13" r="1.2" fill="#555860" stroke="none"/></svg>`;
-  // 26 px gamepad for the 64 px game-view header icon
-  const GAMEPAD_SVG_LG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#555860" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="5"/><path d="M6 12h4M8 10v4"/><circle cx="16" cy="11" r="1.2" fill="#555860" stroke="none"/><circle cx="18" cy="13" r="1.2" fill="#555860" stroke="none"/></svg>`;
 
   // ── Toast ─────────────────────────────────────────────
   function toast(msg, type = 'info', duration = 3000) {
@@ -885,10 +884,10 @@
       img.width = 28; img.height = 28;
       img.alt = '';
       img.loading = 'lazy';
-      img.onerror = () => { img.remove(); wrap.innerHTML = GAMEPAD_SVG; };
+      img.onerror = () => { img.remove(); wrap.textContent = (game.name || '?')[0].toUpperCase(); };
       wrap.appendChild(img);
     } else {
-      wrap.innerHTML = GAMEPAD_SVG;
+      wrap.textContent = (game.name || '?')[0].toUpperCase();
     }
     return wrap;
   }
@@ -1027,37 +1026,61 @@
     });
   }
 
+  function vsRender() {
+    if (!vsContainer) return;
+    const scrollTop = vsContainer.scrollTop;
+    const first     = Math.max(0, Math.floor(scrollTop / VS_ITEM_H) - VS_OVERSCAN);
+    const last      = Math.min(vsGames.length, first + VS_WINDOW + VS_OVERSCAN * 2);
+
+    vsContainer.querySelector('.vs-top').style.height    = `${first * VS_ITEM_H}px`;
+    vsContainer.querySelector('.vs-bottom').style.height = `${(vsGames.length - last) * VS_ITEM_H}px`;
+
+    vsContainer.querySelectorAll('.game-item').forEach(el => el.remove());
+
+    const frag = document.createDocumentFragment();
+    for (let i = first; i < last; i++) frag.appendChild(makeGameItem(vsGames[i]));
+    vsContainer.querySelector('.vs-bottom').before(frag);
+  }
+
   function renderMainList(q) {
     const list      = document.getElementById('game-list');
     const noResults = document.getElementById('no-results');
-    const moreEl    = document.getElementById('more-results');
     const countEl   = document.getElementById('game-count');
 
-    list.querySelectorAll('.game-item').forEach(el => el.remove());
     noResults.style.display = 'none';
-    moreEl.style.display    = 'none';
+    document.getElementById('more-results').style.display = 'none';
 
-    const filtered = q
+    const savedScroll = list.scrollTop;
+
+    vsGames = q
       ? allGames.filter(g => g.name.toLowerCase().includes(q))
       : allGames;
 
-    countEl.textContent = (!q && filtered.length)
-      ? `${filtered.length.toLocaleString()} games`
+    countEl.textContent = (!q && vsGames.length)
+      ? `${vsGames.length.toLocaleString()} games`
       : '';
 
-    if (filtered.length === 0) {
+    list.innerHTML = '';
+    vsContainer = null;
+
+    if (vsGames.length === 0) {
       noResults.style.display = 'block';
       list.appendChild(noResults);
       return;
     }
 
-    const shown = filtered.slice(0, DISPLAY_LIMIT);
-    shown.forEach(game => list.appendChild(makeGameItem(game)));
+    const topSpacer    = document.createElement('div');
+    topSpacer.className = 'vs-top';
+    const bottomSpacer  = document.createElement('div');
+    bottomSpacer.className = 'vs-bottom';
+    list.appendChild(topSpacer);
+    list.appendChild(bottomSpacer);
 
-    if (filtered.length > DISPLAY_LIMIT) {
-      moreEl.style.display = 'block';
-      moreEl.textContent   = `Showing ${DISPLAY_LIMIT} of ${filtered.length.toLocaleString()} — refine search`;
-    }
+    vsContainer = list;
+    list.scrollTop = savedScroll;
+    vsRender();
+
+    list.onscroll = () => requestAnimationFrame(vsRender);
   }
 
   // ── Select game ───────────────────────────────────────
@@ -1078,14 +1101,14 @@
       img.onerror = () => {
         img.remove();
         wrap.style.background = avatarColor(game.name);
-        wrap.innerHTML = GAMEPAD_SVG_LG;
+        wrap.textContent = (game.name || '?')[0].toUpperCase();
         glow.classList.remove('on');
       };
       wrap.appendChild(img);
       glow.classList.add('on');
     } else {
       wrap.style.background = avatarColor(game.name);
-      wrap.innerHTML = GAMEPAD_SVG_LG;
+      wrap.textContent = (game.name || '?')[0].toUpperCase();
       glow.classList.remove('on');
     }
 
