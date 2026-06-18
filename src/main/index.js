@@ -90,9 +90,10 @@ ipcMain.handle('launch-game', async (_, { appId, exeName, exePath, gameName }) =
   }
 
   try {
-    const child = spawn(targetExe, ['--title', gameName, '--tray', '--force-device-scale-factor=1'], {
+    const child = spawn(targetExe, ['--title', gameName], {
       cwd: gameDir,
       detached: false,
+      windowsHide: false,
     });
     runningProcesses.set(String(appId), { child, exeName });
     child.on('exit', () => runningProcesses.delete(String(appId)));
