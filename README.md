@@ -1,108 +1,46 @@
 # PresencePal
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Electron](https://img.shields.io/badge/Electron-31-47848F?logo=electron)](https://www.electronjs.org/)
-[![Platform](https://img.shields.io/badge/Platform-Windows-0078D4?logo=windows)](https://github.com/foxmanhwa/presencepal/releases)
-
 Set your Discord game activity to any game — including mobile titles Discord can't detect on its own.
 
----
+## The problem
+
+Discord shows what game you're playing automatically — but only if it's running on your PC. If you play on your phone, tablet, or any device that isn't your PC, your status stays blank. PresencePal fixes that.
+
+## How it works
+
+PresencePal runs a small background process named after the real game executable. Discord's process scanner picks it up and registers it as your active game — the same way it detects any real PC game.
 
 ## Features
 
-- 10,000+ games pulled live from Discord's detectable games list
-- Mobile game support — Clash Royale, Brawl Stars, PUBG Mobile, and more
-- Live elapsed timer shown in your activity
-- Custom games — add any exe name not in the list
-- Discord-style dark UI
-- NSIS installer and portable single-exe builds
+- 10,444 verified Discord games pulled live from Discord's API
+- Auto-selects the correct executable for each game — no manual configuration
+- Recently played and favorites for quick access
+- System tray support — runs quietly in the background
+- Full keyboard navigation
+- Add any custom game not in the list
 
----
+## Quest completion
 
-## How It Works
+As a side effect of how Discord detects games, running a game through PresencePal will also tick Discord Quest timers for that game. This works for most play-time quests. We are honest that this is a side effect, not the primary purpose — but it works, and we are not going to pretend otherwise.
 
-PresencePal copies a small background executable, renames it to the game's exact process name, and launches it from the folder path Discord expects. Discord's process scanner detects it by name and registers it as your active game.
+## Requirements
 
-```
-PresencePal -> spawn game.exe -> Discord process scanner -> your activity status
-```
-
-Note: the background process window is visible in the taskbar while a game is active. This is required for Discord to detect it.
-
----
+- Windows 10 or later
+- Discord desktop app must be running
+- Discord status must be set to Online to show activity to friends
 
 ## Installation
 
-Download the latest installer or portable exe from [Releases](https://github.com/foxmanhwa/presencepal/releases).
+Download the latest installer or portable exe from the Releases page.
 
-To build from source:
+## Building from source
 
-```bash
+```
 git clone https://github.com/foxmanhwa/presencepal.git
 cd presencepal
 npm install
 npm start
 ```
-
-Requirements: Node.js 18+, Discord running on your PC, Discord status set to Online.
-
----
-
-## Usage
-
-1. Launch PresencePal and make sure Discord is open and set to Online
-2. Search for a game in the sidebar
-3. Click Launch — the correct executable is selected automatically
-4. Click Stop to end the activity
-
-### Adding a custom game
-
-Click **+ Add Custom Game** at the bottom of the sidebar. Provide the game name and the exact `.exe` filename Discord associates with it. You can find the correct exe name by looking up the game on [discord.com/api/v9/applications/detectable](https://discord.com/api/v9/applications/detectable).
-
----
-
-## Companion App
-
-Control your Discord activity from your phone over local Wi-Fi.
-
-### Setup
-
-1. Make sure your phone and PC are on the same Wi-Fi network
-2. Find your PC's local IP address: open Command Prompt and run `ipconfig`, then look for **IPv4 Address** under your Wi-Fi adapter (e.g. `192.168.1.42`)
-3. Open `companion/index.html` from this repo in your phone's browser, or serve it with any static file server:
-   ```bash
-   npx serve companion
-   ```
-4. Enter your PC IP in the companion app and tap **Connect**
-
-PresencePal listens on two ports when running:
-- **HTTP — port 41235**: `GET /play?game=...`, `GET /stop`, `GET /status`
-- **UDP — port 41234**: JSON packets `{ "action": "play", "game": "..." }` or `{ "action": "stop" }`
-
-### Usage
-
-- Tap any game card to set it as your Discord activity
-- A **Stop Activity** bar appears at the bottom while a game is active
-- The gear icon in the top-right lets you switch to a different PC IP
-
----
-
-## Contributing
-
-```bash
-git clone https://github.com/foxmanhwa/presencepal.git
-cd presencepal
-npm install
-npm start
-```
-
-- Add or update games: `src/renderer/games.js`
-- UI: `src/renderer/index.html`
-- Main process / spawn logic: `src/main/index.js`
-
-Open a PR with a clear description of what changed and why.
-
----
 
 ## License
 
