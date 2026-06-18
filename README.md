@@ -10,7 +10,7 @@ Set your Discord game activity to any game — including mobile titles Discord c
 
 ## Features
 
-- 6000+ games pulled live from Discord's detectable games list
+- 10,000+ games pulled live from Discord's detectable games list
 - Mobile game support — Clash Royale, Brawl Stars, PUBG Mobile, and more
 - Live elapsed timer shown in your activity
 - Custom games — add any exe name not in the list
@@ -52,9 +52,8 @@ Requirements: Node.js 18+, Discord running on your PC, Discord status set to Onl
 
 1. Launch PresencePal and make sure Discord is open and set to Online
 2. Search for a game in the sidebar
-3. Select the executable from the dropdown (pick the non-launcher exe when multiple are listed)
-4. Click Launch — Discord will detect the process within a few seconds
-5. Click Stop to end the activity
+3. Click Launch — the correct executable is selected automatically
+4. Click Stop to end the activity
 
 ### Adding a custom game
 
