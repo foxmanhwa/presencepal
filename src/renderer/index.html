@@ -747,6 +747,7 @@
   const VS_WINDOW   = 150;
   let vsGames     = [];
   let vsContainer = null;
+  const noResultsEl = document.getElementById('no-results');
 
   let favorites    = new Set(JSON.parse(localStorage.getItem('pp_favorites') || '[]'));
   let recentGames  = JSON.parse(localStorage.getItem('pp_recent') || '[]');
@@ -1016,10 +1017,9 @@
   }
 
   function renderMainList(q) {
-    const list      = document.getElementById('game-list');
-    const noResults = document.getElementById('no-results');
+    const list = document.getElementById('game-list');
 
-    noResults.style.display = 'none';
+    noResultsEl.style.display = 'none';
 
     const savedScroll = list.scrollTop;
 
@@ -1031,8 +1031,8 @@
     vsContainer = null;
 
     if (vsGames.length === 0) {
-      noResults.style.display = 'block';
-      list.appendChild(noResults);
+      noResultsEl.style.display = 'block';
+      list.appendChild(noResultsEl);
       return;
     }
 
