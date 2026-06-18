@@ -57,7 +57,6 @@
       font-size: 13px;
       letter-spacing: 0.3px;
     }
-    #titlebar .brand .logo { font-size: 18px; }
     #titlebar .brand .name span { color: var(--accent); }
     #titlebar-controls {
       display: flex;
@@ -97,14 +96,9 @@
       flex-shrink: 0;
     }
     #search-wrap { position: relative; }
-    #search-wrap .icon {
-      position: absolute; left: 10px; top: 50%;
-      transform: translateY(-50%);
-      color: var(--text-muted); font-size: 13px; pointer-events: none;
-    }
     #search {
       width: 100%;
-      padding: 7px 10px 7px 30px;
+      padding: 7px 10px;
       background: var(--bg3);
       border: 1px solid var(--border);
       border-radius: var(--radius);
@@ -256,7 +250,6 @@
       gap: 10px;
       font-size: 13px;
     }
-    #empty-state .icon { font-size: 52px; }
     #empty-state strong { color: var(--text); font-size: 15px; }
 
     /* Game view */
@@ -457,6 +450,16 @@
     #sc-label.active   { color: var(--green); font-weight: 600; }
     #sc-label.scanning { color: var(--yellow); }
     #sc-game-section { display: none; }
+    #sc-online-notice {
+      display: none;
+      margin-top: 14px;
+      padding-top: 10px;
+      border-top: 1px solid var(--border);
+      font-size: 11px;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+    #sc-online-notice strong { color: var(--text); }
     #sc-game-name {
       font-size: 13px;
       font-weight: 600;
@@ -540,7 +543,6 @@
 <!-- Titlebar -->
 <div id="titlebar">
   <div class="brand">
-    <span class="logo">🎮</span>
     <span class="name">Presence<span>Pal</span></span>
   </div>
   <div id="titlebar-controls">
@@ -556,8 +558,7 @@
   <aside id="sidebar">
     <div id="sidebar-header">
       <div id="search-wrap">
-        <span class="icon">🔍</span>
-        <input id="search" type="text" placeholder="Search games…" autocomplete="off" />
+        <input id="search" type="text" placeholder="Search games..." autocomplete="off" />
       </div>
       <div id="game-count"></div>
     </div>
@@ -573,7 +574,7 @@
     <div id="more-results"></div>
 
     <div id="sidebar-footer">
-      <button id="add-custom-btn">＋ Add Custom Game</button>
+      <button id="add-custom-btn">+ Add Custom Game</button>
       <div id="api-status"></div>
     </div>
   </aside>
@@ -581,15 +582,14 @@
   <!-- Main -->
   <main id="main">
     <div id="empty-state">
-      <span class="icon">🎮</span>
       <strong>Select a game to get started</strong>
-      <span>PresencePal runs a dummy process Discord detects as the real game</span>
+      <span>PresencePal runs a background process Discord detects as the real game</span>
     </div>
 
     <div id="game-view">
       <div id="game-header">
         <div class="game-title-row">
-          <div id="hdr-icon-wrap">🎮</div>
+          <div id="hdr-icon-wrap"></div>
           <div>
             <div id="hdr-name">Game</div>
             <div id="hdr-exe">—</div>
@@ -617,12 +617,12 @@
           </div>
 
           <div class="info-box">
-            <div class="info-title">ℹ How it works</div>
+            <div class="info-title">How it works</div>
             <div class="info-text">
-              PresencePal copies a tiny stub <code>runner.exe</code>, renames it to
-              <code id="info-exe-name">game.exe</code>, and launches it from the correct folder.
-              Discord sees the process running and registers it as the real game,
-              updating your activity status automatically.
+              PresencePal copies a small background executable, renames it to
+              <code id="info-exe-name">game.exe</code>, and launches it from the expected
+              folder path. Discord's process scanner detects it by name and shows it
+              as your active game automatically.
             </div>
           </div>
         </div>
@@ -638,6 +638,9 @@
             <div id="sc-game-name"></div>
             <div id="sc-elapsed-label">Elapsed</div>
             <div id="sc-elapsed">0:00</div>
+          </div>
+          <div id="sc-online-notice">
+            Set Discord status to <strong>Online</strong> to show activity to friends.
           </div>
         </div>
       </div>
@@ -711,7 +714,7 @@
     return `https://cdn.discordapp.com/app-icons/${id}/${hash}.png?size=64`;
   }
 
-  function makeIconEl(id, hash, fallback = '🎮', size = 32) {
+  function makeIconEl(id, hash, fallback = '', size = 32) {
     const wrap = document.createElement('div');
     wrap.className = 'game-icon-wrap';
     wrap.style.cssText = `width:${size}px;height:${size}px;font-size:${Math.round(size*0.55)}px`;
@@ -748,7 +751,7 @@
       id:         g.id,
       name:       g.name,
       icon:       null,
-      emoji:      g.emoji || '🎮',
+      emoji:      '',
       winExes:    g.exeName ? [{ name: g.exeName, is_launcher: false }] : [],
       primaryExe: g.exeName ? { name: g.exeName } : null,
       source:     'fallback',
@@ -775,7 +778,7 @@
     } else {
       // Fall back to hardcoded games.js list
       allGames = (typeof GAMES !== 'undefined' ? GAMES : []).map(normalizeFallbackGame);
-      apiStatus.textContent = '⚠ Offline — showing built-in list';
+      apiStatus.textContent = 'Offline — showing built-in list';
       apiStatus.className   = 'fallback';
       if (!res.success) toast(`Could not reach Discord API: ${res.error}`, 'warn', 5000);
     }
@@ -830,7 +833,7 @@
       (runningSet.has(game.id)      ? ' running'  : '');
     el.dataset.id = game.id;
 
-    const iconWrap = makeIconEl(game.id, game.icon, game.emoji || '🎮', 32);
+    const iconWrap = makeIconEl(game.id, game.icon, '', 32);
 
     const info = document.createElement('div');
     info.className = 'game-info';
@@ -861,7 +864,7 @@
     // Header
     const hdrWrap = document.getElementById('hdr-icon-wrap');
     hdrWrap.innerHTML = '';
-    const iconEl = makeIconEl(game.id, game.icon, game.emoji || '🎮', 60);
+    const iconEl = makeIconEl(game.id, game.icon, '', 60);
     iconEl.style.cssText = 'width:60px;height:60px;border-radius:12px;font-size:30px;background:var(--bg2);display:flex;align-items:center;justify-content:center;';
     // Reuse the inner content
     hdrWrap.style.cssText = '';
@@ -870,10 +873,10 @@
       img.src = iconUrl(game.id, game.icon);
       img.width = 60; img.height = 60;
       img.style.cssText = 'width:60px;height:60px;object-fit:cover;border-radius:12px;display:block;';
-      img.onerror = () => { img.remove(); hdrWrap.textContent = game.emoji || '🎮'; };
+      img.onerror = () => { img.remove(); };
       hdrWrap.appendChild(img);
     } else {
-      hdrWrap.textContent = game.emoji || '🎮';
+      hdrWrap.textContent = '';
     }
 
     document.getElementById('hdr-name').textContent = game.name;
@@ -956,11 +959,13 @@
   }
 
   function setStatusCard(type, label) {
-    const dot  = document.getElementById('sc-dot');
-    const span = document.getElementById('sc-label');
-    dot.className   = type;
-    span.className  = type;
+    const dot    = document.getElementById('sc-dot');
+    const span   = document.getElementById('sc-label');
+    const notice = document.getElementById('sc-online-notice');
+    dot.className    = type;
+    span.className   = type;
     span.textContent = label;
+    notice.style.display = (type === 'active') ? 'block' : 'none';
   }
 
   // ── Scan countdown ────────────────────────────────────
@@ -1082,7 +1087,6 @@
       id:         appId,
       name,
       icon:       null,
-      emoji:      '🎮',
       winExes:    [{ name: exeName, is_launcher: false }],
       primaryExe: { name: exeName },
       source:     'custom',

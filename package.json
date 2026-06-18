@@ -7,7 +7,7 @@
   "main": "src/main/index.js",
   "scripts": {
     "start": "electron .",
-    "build": "electron-builder --win portable"
+    "build": "electron-builder --win"
   },
   "keywords": [
     "discord",
@@ -24,18 +24,25 @@
     "discord-rpc": "^4.0.1"
   },
   "build": {
-    "appId": "com.foxmanhwa.presencepal",
+    "appId": "com.presencepal.app",
     "productName": "PresencePal",
     "directories": {
       "output": "dist"
     },
+    "extraResources": [
+      {
+        "from": "assets/runner.exe",
+        "to": "runner.exe"
+      }
+    ],
     "win": {
-      "target": "portable",
-      "icon": "assets/icon.ico"
+      "target": ["nsis", "portable"],
+      "icon": "assets/icon.png"
     },
     "files": [
       "src/**/*",
       "assets/**/*",
+      "!assets/runner.exe",
       "node_modules/**/*",
       "package.json"
     ]

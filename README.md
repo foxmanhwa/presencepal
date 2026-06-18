@@ -1,45 +1,41 @@
-# 🎮 PresencePal
+# PresencePal
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Electron](https://img.shields.io/badge/Electron-31-47848F?logo=electron)](https://www.electronjs.org/)
-[![Discord RPC](https://img.shields.io/badge/Discord-RPC-5865F2?logo=discord)](https://discord.com/)
 [![Platform](https://img.shields.io/badge/Platform-Windows-0078D4?logo=windows)](https://github.com/foxmanhwa/presencepal/releases)
 
-> Set your Discord Rich Presence to any game — including mobile games Discord can't detect automatically.
-
-![PresencePal Screenshot](assets/screenshot.png)
+Set your Discord game activity to any game — including mobile titles Discord can't detect on its own.
 
 ---
 
-## ✨ Features
+## Features
 
-- 🕹️ **30+ built-in games** — Mobile, PC, and Console titles
-- 📱 **Mobile game support** — Clash Royale, Brawl Stars, PUBG Mobile, and more
-- ⏱️ **Live play timer** — Shows elapsed time in Discord
-- 🎨 **Discord-style UI** — Frameless dark theme that feels native
-- ➕ **Custom games** — Add any game not in the list
-- ⚡ **One-click activity** — Set, preview, and clear presence instantly
-- 🔌 **No login required** — Uses Discord's local IPC connection
+- 6000+ games pulled live from Discord's detectable games list
+- Mobile game support — Clash Royale, Brawl Stars, PUBG Mobile, and more
+- Live elapsed timer shown in your activity
+- Custom games — add any exe name not in the list
+- Discord-style dark UI
+- NSIS installer and portable single-exe builds
 
 ---
 
-## 🚀 How It Works
+## How It Works
 
-PresencePal connects to Discord's local IPC socket using the [Discord RPC protocol](https://discord.com/developers/docs/topics/rpc). It sets your Rich Presence activity without needing to open Discord's developer tools or install anything extra — Discord just needs to be running.
+PresencePal copies a small background executable, renames it to the game's exact process name, and launches it from the folder path Discord expects. Discord's process scanner detects it by name and registers it as your active game.
 
 ```
-PresencePal → discord-rpc → Discord local IPC → Your profile
+PresencePal -> spawn game.exe -> Discord process scanner -> your activity status
 ```
+
+Note: the background process window is visible in the taskbar while a game is active. This is required for Discord to detect it.
 
 ---
 
-## 📦 Installation
+## Installation
 
-### Download (recommended)
+Download the latest installer or portable exe from [Releases](https://github.com/foxmanhwa/presencepal/releases).
 
-Grab the latest portable `.exe` from [Releases](https://github.com/foxmanhwa/presencepal/releases) — no install needed, just run it.
-
-### Build from source
+To build from source:
 
 ```bash
 git clone https://github.com/foxmanhwa/presencepal.git
@@ -48,37 +44,25 @@ npm install
 npm start
 ```
 
-**Requirements:** Node.js 18+, Discord running on your PC.
+Requirements: Node.js 18+, Discord running on your PC, Discord status set to Online.
 
 ---
 
-## 🎯 Usage
+## Usage
 
-1. **Launch PresencePal** and make sure Discord is open
-2. **Pick a game** from the sidebar (search or filter by category)
-3. **Customize** the details and state lines
-4. Click **Set Activity** — your Discord profile updates instantly
-5. Click **Stop** to clear the activity
+1. Launch PresencePal and make sure Discord is open and set to Online
+2. Search for a game in the sidebar
+3. Select the executable from the dropdown (pick the non-launcher exe when multiple are listed)
+4. Click Launch — Discord will detect the process within a few seconds
+5. Click Stop to end the activity
 
 ### Adding a custom game
 
-Click **+ Add Custom Game** at the bottom of the sidebar and fill in the name, emoji, and (optionally) your own Discord Application Client ID for a custom large image.
+Click **+ Add Custom Game** at the bottom of the sidebar. Provide the game name and the exact `.exe` filename Discord associates with it. You can find the correct exe name by looking up the game on [discord.com/api/v9/applications/detectable](https://discord.com/api/v9/applications/detectable).
 
 ---
 
-## 🔧 Using Your Own Client ID
-
-By default, PresencePal uses a shared Application ID. To show a **custom game image** on your profile:
-
-1. Go to [Discord Developer Portal](https://discord.com/developers/applications) → New Application
-2. Add art assets under **Rich Presence → Art Assets**
-3. Copy your **Application ID** and paste it into the Client ID field in PresencePal
-
----
-
-## 🤝 Contributing
-
-Contributions are welcome! To add games or fix bugs:
+## Contributing
 
 ```bash
 git clone https://github.com/foxmanhwa/presencepal.git
@@ -87,14 +71,14 @@ npm install
 npm start
 ```
 
-- **Add games:** Edit `src/renderer/games.js`
-- **UI changes:** Edit `src/renderer/index.html`
-- **Main process:** Edit `src/main/index.js`
+- Add or update games: `src/renderer/games.js`
+- UI: `src/renderer/index.html`
+- Main process / spawn logic: `src/main/index.js`
 
-Open a PR and describe what you changed. Keep PRs focused — one feature or fix per PR.
+Open a PR with a clear description of what changed and why.
 
 ---
 
-## 📄 License
+## License
 
-MIT © [foxmanhwa](https://github.com/foxmanhwa)
+MIT (c) foxmanhwa
