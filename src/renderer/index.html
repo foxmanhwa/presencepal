@@ -808,6 +808,32 @@
     return `https://cdn.discordapp.com/app-icons/${id}/${hash}.png?size=${size}`;
   }
 
+  // ── Avatar colors (keyed by first letter of game name) ────────────────────
+  // Discord's detectable games API returns no icon hashes, so every game
+  // falls back to a colored avatar. 10 muted dark tones cycle A–Z.
+  const AVATAR_COLORS = [
+    '#0f1e33', // A K U — navy
+    '#0f2318', // B L V — forest
+    '#2a1212', // C M W — deep red
+    '#1e0f2d', // D N X — violet
+    '#1e1a0a', // E O Y — dark gold
+    '#0f2222', // F P Z — teal
+    '#280f22', // G Q   — burgundy
+    '#0f1722', // H R   — slate
+    '#1a220f', // I S   — olive
+    '#22130f', // J T   — sienna
+  ];
+
+  function avatarColor(name) {
+    const code = ((name || '').toUpperCase().charCodeAt(0) || 65) - 65;
+    return AVATAR_COLORS[((code % AVATAR_COLORS.length) + AVATAR_COLORS.length) % AVATAR_COLORS.length];
+  }
+
+  // 13 px gamepad for 28 px sidebar icons
+  const GAMEPAD_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="#555860" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="5"/><path d="M6 12h4M8 10v4"/><circle cx="16" cy="11" r="1.2" fill="#555860" stroke="none"/><circle cx="18" cy="13" r="1.2" fill="#555860" stroke="none"/></svg>`;
+  // 26 px gamepad for the 64 px game-view header icon
+  const GAMEPAD_SVG_LG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#555860" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="5"/><path d="M6 12h4M8 10v4"/><circle cx="16" cy="11" r="1.2" fill="#555860" stroke="none"/><circle cx="18" cy="13" r="1.2" fill="#555860" stroke="none"/></svg>`;
+
   // ── Toast ─────────────────────────────────────────────
   function toast(msg, type = 'info', duration = 3000) {
     const el = document.createElement('div');
@@ -851,16 +877,18 @@
   function makeSmallIcon(game) {
     const wrap = document.createElement('div');
     wrap.className = 'game-icon-sm';
+    wrap.style.background = avatarColor(game.name);
     const url = iconUrl(game.id, game.icon, 32);
     if (url) {
       const img = document.createElement('img');
       img.src = url;
       img.width = 28; img.height = 28;
       img.alt = '';
-      img.onerror = () => { img.remove(); wrap.textContent = (game.name || '?')[0].toUpperCase(); };
+      img.loading = 'lazy';
+      img.onerror = () => { img.remove(); wrap.innerHTML = GAMEPAD_SVG; };
       wrap.appendChild(img);
     } else {
-      wrap.textContent = (game.name || '?')[0].toUpperCase();
+      wrap.innerHTML = GAMEPAD_SVG;
     }
     return wrap;
   }
@@ -1046,11 +1074,18 @@
       img.src = url;
       img.width = 64; img.height = 64;
       img.style.cssText = 'width:64px;height:64px;object-fit:cover;display:block;';
-      img.onerror = () => { img.remove(); wrap.textContent = (game.name || '?')[0].toUpperCase(); glow.classList.remove('on'); };
+      img.loading = 'lazy';
+      img.onerror = () => {
+        img.remove();
+        wrap.style.background = avatarColor(game.name);
+        wrap.innerHTML = GAMEPAD_SVG_LG;
+        glow.classList.remove('on');
+      };
       wrap.appendChild(img);
       glow.classList.add('on');
     } else {
-      wrap.textContent = (game.name || '?')[0].toUpperCase();
+      wrap.style.background = avatarColor(game.name);
+      wrap.innerHTML = GAMEPAD_SVG_LG;
       glow.classList.remove('on');
     }
 
